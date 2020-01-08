@@ -17,10 +17,10 @@ export interface IDecodedFrame {
 	body: Buffer;
 }
 
-import { readFileSync, writeFileSync } from "fs";
 import FrameDecoder from "./frameDecoder";
 import { IFrames, AllFrameNames } from "./frameDefinitions";
 import FrameEncoder from "./frameEncoder";
+import { printBuffer, readFile, writeFile } from './utils';
 
 /**
  * The class which handles all ID3 interaction
@@ -31,7 +31,7 @@ class NodeID3 {
 	 * @param frames - The metadata frames to write to the file
 	 * @param file - The path of the file to write the frames to
 	 */
-	public write(file: string, frames: IFrames): undefined;
+	public async write(file: string, frames: IFrames): Promise<undefined>;
 
 	/**
 	 * Write ID3 frames to a buffer
@@ -39,17 +39,17 @@ class NodeID3 {
 	 * @param buffer - The buffer to write the frames to
 	 * @returns The buffer with the frames written
 	 */
-	public write(buffer: Buffer, frames: IFrames): Buffer;
-	public write(fileBuffer: Buffer | string, frames: IFrames) {
-		const currentData = fileBuffer instanceof Buffer ? fileBuffer : readFileSync(fileBuffer);
+	public async write(buffer: Buffer, frames: IFrames): Promise<Buffer>;
+	public async write(fileBuffer: Buffer | string, frames: IFrames) {
+		const currentData = fileBuffer instanceof Buffer ? fileBuffer : await readFile(fileBuffer);
 
 		const newData = Buffer.concat([
 			this.create(frames),
-			this.remove(currentData)
+			await this.remove(currentData)
 		]);
 
 		if(typeof fileBuffer === "string"){
-			writeFileSync(fileBuffer, newData, "binary");
+			await writeFile(fileBuffer, newData);
 
 			return undefined;
 		}
@@ -98,16 +98,16 @@ class NodeID3 {
 	 * @param file - The path to the file for which to read the ID3 information
 	 * @returns The ID3 information
 	 */
-	public read(file: string): IFrames;
+	public async read(file: string): Promise<IFrames>;
 
 	/**
 	 * Read ID3 information from a buffer
 	 * @param fileBuffer - The buffer to read the information from
 	 * @returns The ID3 information
 	 */
-	public read(buffer: Buffer): IFrames;
-	public read(fileBuffer: string | Buffer) {
-		const bufferToRead = fileBuffer instanceof Buffer ? fileBuffer : readFileSync(fileBuffer);
+	public async read(buffer: Buffer): Promise<IFrames>;
+	public async read(fileBuffer: string | Buffer) {
+		const bufferToRead = fileBuffer instanceof Buffer ? fileBuffer : await readFile(fileBuffer);
 
 		const framePosition = this.getFramePosition(bufferToRead);
 
@@ -115,7 +115,10 @@ class NodeID3 {
 			return {};
 		}
 
-		const sizeBuffer = Buffer.from(bufferToRead.toString("hex", framePosition, framePosition + 10), "hex");
+		const sizeBuffer = bufferToRead.subarray(framePosition, framePosition + 10);
+
+		printBuffer(sizeBuffer);
+		printBuffer(bufferToRead.subarray(framePosition, framePosition + 10));
 
 		const frameSize = this.decodeSize(Buffer.from([ sizeBuffer[6], sizeBuffer[7], sizeBuffer[8], sizeBuffer[9] ]));
 		const ID3Frame = Buffer.alloc(frameSize + 1);
@@ -172,16 +175,16 @@ class NodeID3 {
 	 * Remove the ID3 tag from a file
 	 * @param file - The file to remove the ID3 tag from
 	 */
-	public remove(file: string): undefined;
+	public async remove(file: string): Promise<undefined>;
 
 	/**
 	 * Remove all the ID3 tag from a buffer
 	 * @param buffer - The buffer to remove the tag from
 	 * @returns The buffer without the ID3 tag
 	 */
-	public remove(buffer: Buffer): Buffer;
-	public remove(data: string | Buffer){
-		const dataBuffer = typeof data === "string" ? readFileSync(data) : data;
+	public async remove(buffer: Buffer): Promise<Buffer>;
+	public async remove(data: string | Buffer){
+		const dataBuffer = typeof data === "string" ? await readFile(data) : data;
 
 		const ID3Offset = this.getFramePosition(dataBuffer);
 
@@ -201,10 +204,10 @@ class NodeID3 {
 			return false;
 		}
 
-		const newData = data.slice(ID3Offset + this.decodeSize(hSize) + 10);
+		const newData = dataBuffer.slice(ID3Offset + this.decodeSize(hSize) + 10);
 
 		if(typeof data === "string"){
-			writeFileSync(data, newData, "binary");
+			writeFile(data, newData);
 
 			return undefined;
 		}
@@ -217,7 +220,7 @@ class NodeID3 {
 	 * @param frames - The frames to update the file with
 	 * @param file - The path to the file to update
 	 */
-	public update(frames: IFrames, file: string): undefined;
+	public async update(frames: IFrames, file: string): Promise<undefined>;
 
 	/**
 	 * Update a buffer with new ID3 frames
@@ -225,8 +228,8 @@ class NodeID3 {
 	 * @param buffer - The buffer to update
 	 * @returns The buffer with the new frames
 	 */
-	public update(frames: IFrames, buffer: Buffer): Buffer;
-	public update(frames: IFrames, fileBuffer: string | Buffer){
+	public async update(frames: IFrames, buffer: Buffer): Promise<Buffer>;
+	public async update(frames: IFrames, fileBuffer: string | Buffer){
 		//Typecast fileBuffer to one or the other of string or buffer, it will be handled correctly at runtime
 		const result = this.write(fileBuffer as Buffer, {
 			...this.read(fileBuffer as Buffer),

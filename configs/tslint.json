@@ -233,7 +233,6 @@
 			"interfaces",
 			"methods",
 			"namespaces",
-			"properties",
 			"types"
 		],
 		"encoding": true,

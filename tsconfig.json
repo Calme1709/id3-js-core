@@ -3,9 +3,9 @@
 		"target": "ES3",
 		"module": "commonjs",
 		"lib": [
-			"esnext"
+			"esnext",
+			"DOM"
 		],
-		"rootDir": "./src",
 		"outDir": "./dist",
 		"removeComments": false,
 		"downlevelIteration": true,
@@ -25,5 +25,8 @@
 		"watch": false,
 		"experimentalDecorators": true,
 		"declaration": true
-	}
+	},
+	"files": [
+		"./src/index.ts"
+	]
 }
