@@ -53,7 +53,7 @@ export default class TextInformationFrame extends Frame {
 	/**
 	 * The frame identifier
 	 */
-	public identifier: string;
+	public identifier!: string;
 
 	/**
 	 * The value of this text frame
@@ -66,12 +66,11 @@ export default class TextInformationFrame extends Frame {
 		super();
 
 		if(dataOrIdentifier instanceof Buffer){
-			const identifierLength = Utils.getIdentifierLength(valueOrID3Version as number);
-			const encoding = Utils.getEncoding(dataOrIdentifier[valueOrID3Version === 2 ? 6 : 10]);
+			const headerInfo = this.decodeHeader(dataOrIdentifier, valueOrID3Version as 3 | 4);
 
-			this.identifier = dataOrIdentifier.slice(0, identifierLength).toString("latin1");
+			const encoding = Utils.getEncoding(dataOrIdentifier[headerInfo.headerSize]);
 
-			this.value = dataOrIdentifier.slice((valueOrID3Version === 2 ? 6 : 10) + 1).toString(encoding);
+			this.value = dataOrIdentifier.slice((headerInfo.headerSize) + 1).toString(encoding);
 		} else {
 			this.identifier = dataOrIdentifier;
 			this.value = valueOrID3Version as string;
@@ -83,7 +82,7 @@ export default class TextInformationFrame extends Frame {
 	 * @param encodingOptions - The encoding options to encode with
 	 * @returns The encoded content
 	 */
-	public encodeContent(encodingOptions: IEncodingOptions): Buffer {
+	public encodeContent(encodingOptions: IEncodingOptions){
 		return Buffer.concat([
 			Buffer.from(new Uint8Array([
 				Utils.getEncodingByte(encodingOptions.textEncoding)

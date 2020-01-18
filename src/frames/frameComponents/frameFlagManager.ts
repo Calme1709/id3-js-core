@@ -1,7 +1,26 @@
-import { IV3FrameFlags, IV4FrameFlags } from '../../types';
 import Utils from '../../utils';
 import { IEncodingOptions } from '../../encodingOptions';
 import { Buffer } from 'buffer';
+
+/**
+ * The flags stored with a frame in a tag adhering to the ID3v2.3 spec
+ */
+export interface IV3FrameFlags {
+	discardOnTagAlteration: boolean;
+	discardOnFileAlteration: boolean;
+	readOnly: boolean;
+	compression: boolean;
+	encryption: boolean;
+	groupingIdentity: boolean;
+}
+
+/**
+ * The flags stored with a frame in a tag adhering to the ID3v2.4 spec
+ */
+export interface IV4FrameFlags extends IV3FrameFlags {
+	unsynchronisation: boolean;
+	dataLengthIndicator: boolean;
+}
 
 /**
  * A class for managing the frame flags

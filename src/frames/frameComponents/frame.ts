@@ -1,8 +1,7 @@
 import { Buffer } from "buffer";
 import { IEncodingOptions } from '../../encodingOptions';
-import { IV3FrameFlags, IV4FrameFlags } from '../../types';
 import Utils from '../../utils';
-import FrameFlagManager from './frameFlagManager';
+import FrameFlagManager, { IV4FrameFlags, IV3FrameFlags } from './frameFlagManager';
 
 /**
  * The base class that all frames derive from
@@ -35,6 +34,47 @@ export default abstract class Frame {
 	 * @returns The encoded frame
 	 */
 	public abstract encodeContent(encodingOptions: IEncodingOptions): Buffer;
+
+	/**
+	 * Decode and set data from the header
+	 * @param data - The buffer of the data to decode
+	 * @param ID3Version - The version of the ID3v2 spec to adhere to when decoding the header
+	 * @returns An object containing some information that was stored in, and about the header
+	 */
+	public decodeHeader(data: Buffer, ID3Version: 2 | 3 | 4){
+		const identifierLength = Utils.getIdentifierLength(ID3Version);
+
+		this.identifier = data.slice(0, identifierLength).toString("latin1");
+		let headerSize = ID3Version === 2 ? 6 : 10;
+		const frameSize = Utils.decodeSynchsafeInteger(data.readIntBE(identifierLength, identifierLength));
+
+		if(ID3Version > 2){
+			this.flagManager.setFlags(data.slice(8, 10), ID3Version as 3 | 4);
+
+			if(this.flags?.groupingIdentity){
+				headerSize += 1;
+			}
+
+			if(this.flags?.compression && ID3Version === 3){
+				headerSize += 4;
+			}
+
+			if(this.flags?.encryption){
+				headerSize += 1;
+			}
+
+			if((this.flags as IV4FrameFlags).dataLengthIndicator){
+				headerSize += 4;
+			}
+		}
+
+		return {
+			headerSize,
+			frameSize,
+			identifier: this.identifier,
+			flags: this.flags
+		};
+	}
 
 	/**
 	 * Encode the frame

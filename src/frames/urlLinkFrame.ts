@@ -38,10 +38,9 @@ export default class URLLinkFrame extends Frame {
 		super();
 
 		if(dataOrIdentifier instanceof Buffer){
-			const identifierLength = Utils.getIdentifierLength(valueOrID3Version as number);
+			const headerInfo = this.decodeHeader(dataOrIdentifier, valueOrID3Version as 2 | 3 | 4);
 
-			this.identifier = dataOrIdentifier.slice(0, identifierLength).toString("latin1");
-			this.value = dataOrIdentifier.slice(valueOrID3Version === 2 ? 6 : 10).toString("latin1");
+			this.value = dataOrIdentifier.slice(headerInfo.headerSize).toString("latin1");
 		} else {
 			this.identifier = dataOrIdentifier;
 			this.value = valueOrID3Version as string;
@@ -53,7 +52,7 @@ export default class URLLinkFrame extends Frame {
 	 * @param encodingOptions - The encoding options to encode with
 	 * @returns The encoded content
 	 */
-	public encodeContent(encodingOptions: IEncodingOptions): Buffer {
+	public encodeContent(encodingOptions: IEncodingOptions){
 		return Buffer.from(this.value, encodingOptions.textEncoding);
 	}
 }
