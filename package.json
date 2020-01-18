@@ -21,16 +21,12 @@
 		"url": "https://github.com/Calme1709/id3-js"
 	},
 	"devDependencies": {
-		"@types/iconv-lite": "0.0.1",
-		"@types/node": "^12.12.14",
 		"tslint": "5.20.1",
 		"tslint-eslint-rules": "5.4.0",
 		"typescript": "^3.7.3"
 	},
 	"dependencies": {
-		"buffer": "^5.4.3",
-		"iconv-lite": "^0.5.0",
-		"react-native-fs": "^2.16.2"
+		"buffer": "^5.4.3"
 	},
 	"files": [
 		"dist/"
