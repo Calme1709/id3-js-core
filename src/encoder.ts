@@ -4,7 +4,7 @@ import { Buffer } from "buffer";
 export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) => {
 	const computedEncodingOptions: IEncodingOptions = {
 		ID3Version: 4,
-		textEncoding: "UTF-16",
+		textEncoding: "utf8",
 		...encodingOptions
 	};
 
@@ -15,4 +15,4 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 	for(const frame of frames){
 		encodedFrames.push(frame.encode(computedEncodingOptions));
 	}
-}
+};

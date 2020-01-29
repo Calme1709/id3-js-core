@@ -1,7 +1,7 @@
 /**
  * All the supported text encoding methods
  */
-export type TextEncoding = "UTF-8" | "UTF-16" | "UTF-16BE" | "latin1";
+export type TextEncoding = "utf8" | "utf16le" | "utf16be" | "latin1";
 
 /**
  * Options for encoding the tag
