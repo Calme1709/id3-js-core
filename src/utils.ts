@@ -92,25 +92,6 @@ export default class Utils {
 	}
 
 	/**
-	 * Find the index of the first double zero byte in a buffer
-	 * @param body - The body to search through
-	 * @returns The index of the first double zero byte
-	 */
-	public static indexOfDoubleZeroByte(body: Buffer, offset = 0){
-		let currentIndex = body.indexOf(0x00, offset);
-
-		while(currentIndex !== -1){
-			if(body[currentIndex + 1] === 0x00){
-				return currentIndex;
-			}
-
-			currentIndex = body.indexOf(0x00, currentIndex + 1);
-		}
-
-		return -1;
-	}
-
-	/**
 	 * Decode a timestamp unit from it's number notation (0x00 or 0x01) to it's language representation (Milliseconds
 	 * or MPEG Frames respectively)
 	 * @param unitByte - The number notation of the timestamp unit

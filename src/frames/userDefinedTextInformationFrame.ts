@@ -56,11 +56,11 @@ export default class UserDefinedTextInformationFrame extends Frame {
 
 			const encodingType = Utils.getEncoding(dataOrDescription[headerInfo.headerSize]);
 
-			const nullByteLength = Utils.getNullByteLength(dataOrDescription[headerInfo.headerSize]);
+			const nullByteLength = Utils.getNullByteLength(encodingType);
 
-			const splitPoint = nullByteLength === 2 ?
-				Utils.indexOfDoubleZeroByte(dataOrDescription, headerInfo.headerSize) :
-				dataOrDescription.indexOf(0x00, headerInfo.headerSize);
+			const delimiter = nullByteLength === 2 ? Buffer.from(new Uint8Array([ 0x00, 0x00 ])) : 0x00;
+
+			const splitPoint = dataOrDescription.indexOf(delimiter, headerInfo.headerSize);
 
 			this.value = {
 				description: dataOrDescription.slice(headerInfo.headerSize, splitPoint).toString(encodingType),
