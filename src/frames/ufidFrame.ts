@@ -1,7 +1,5 @@
 import { Buffer } from 'buffer';
-import Utils from '../utils';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encodingOptions';
 
 /**
  * The information stored in a UFID frame
@@ -12,14 +10,9 @@ interface IUFIDValue {
 }
 
 /**
- * A basic URL Link frame
+ * A UFID frame
  */
-export default class URLLinkFrame extends Frame {
-	/**
-	 * The supported ID3v2 versions
-	 */
-	public readonly contentSupportedVersions = [ 2, 3, 4 ];
-
+export default class UFIDFrame extends Frame {
 	/**
 	 * The type of frame
 	 */
@@ -28,14 +21,31 @@ export default class URLLinkFrame extends Frame {
 	/**
 	 * The identifier of this frame
 	 */
-	public identifier: string;
+	public identifier!: string;
 
 	/**
 	 * The value of this text frame
 	 */
 	public value: IUFIDValue;
 
-	public constructor(dataBuffer: Buffer, ID3Version: number);
+	/**
+	 * The supported ID3v2 versions
+	 */
+	protected readonly contentSupportedVersions = [ 2, 3, 4 ];
+
+	/**
+	 * Decode a UFID frame from a buffer
+	 * @param data - The data to decode
+	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
+	 */
+	public constructor(data: Buffer, ID3Version: number);
+
+	/**
+	 * Create a new UFID frame
+	 * @param ownerIdentifier - The owner identifier that is to be stored in this frame, typically this is an email or a link
+	 * to a webpage where an email can be found
+	 * @param identifier - The unique file identifier, this is a buffer which can be up to 64 bits
+	 */
 	public constructor(ownerIdentifier: string, identifier: Buffer);
 	public constructor(dataOrOwnerIdentifier: string | Buffer, identifierOrID3Version: Buffer | number){
 		super();
@@ -50,6 +60,14 @@ export default class URLLinkFrame extends Frame {
 				identifier: dataOrOwnerIdentifier.slice(splitPoint + 1)
 			};
 		} else {
+			if(dataOrOwnerIdentifier.length === 0){
+				throw new Error("Owner identifier of a UFID frame cannot be empty");
+			}
+
+			if((identifierOrID3Version as Buffer).length > 64){
+				throw new Error("Identifier of a UFID frame can be at most 64 bytes in length");
+			}
+
 			this.identifier = "UFID";
 
 			this.value = {

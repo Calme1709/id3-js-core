@@ -60,7 +60,18 @@ export default class TextInformationFrame extends Frame {
 	 */
 	public value: string;
 
-	public constructor(dataBuffer: Buffer, ID3Version: number);
+	/**
+	 * Decode a text information frame from a buffer
+	 * @param data - The data to decode
+	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
+	 */
+	public constructor(data: Buffer, ID3Version: number);
+
+	/**
+	 * Create a new text information frame
+	 * @param identifier - The identifier of this frame
+	 * @param value - The value of this text information frame
+	 */
 	public constructor(identifier: string, value: string);
 	public constructor(dataOrIdentifier: string | Buffer, valueOrID3Version: string | number){
 		super();

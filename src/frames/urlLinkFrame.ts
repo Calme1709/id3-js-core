@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer';
-import Utils from '../utils';
 import Frame from './frameComponents/frame';
 import { IEncodingOptions } from '../encodingOptions';
 
@@ -8,9 +7,24 @@ import { IEncodingOptions } from '../encodingOptions';
  */
 export default class URLLinkFrame extends Frame {
 	/**
+	 * The type of frame
+	 */
+	public frameType = "URLLINKFRAME";
+
+	/**
+	 * The identifier of this frame
+	 */
+	public identifier!: string;
+
+	/**
+	 * The value of this text frame
+	 */
+	public value: string;
+
+	/**
 	 * The supported ID3v2 versions
 	 */
-	get contentSupportedVersions(){
+	protected get contentSupportedVersions(){
 		const addedInV3 = [ "WORS", "WPAY" ];
 
 		if(addedInV3.includes(this.identifier)){
@@ -21,18 +35,17 @@ export default class URLLinkFrame extends Frame {
 	}
 
 	/**
-	 * The type of frame
+	 * Decode a URL link frame from a buffer
+	 * @param data - The data to decode
+	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
 	 */
-	public frameType = "URLLINKFRAME";
-
-	public identifier: string;
+	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * The value of this text frame
+	 * Create a URL link information frame
+	 * @param identifier - The identifier of this frame
+	 * @param value - The value of this text information frame
 	 */
-	public value: string;
-
-	public constructor(dataBuffer: Buffer, ID3Version: number);
 	public constructor(identifier: string, value: string);
 	public constructor(dataOrIdentifier: string | Buffer, valueOrID3Version: string | number){
 		super();
