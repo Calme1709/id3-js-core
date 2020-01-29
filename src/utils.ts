@@ -102,6 +102,27 @@ export default class Utils {
 	}
 
 	/**
+	 * Get the terminator byte(s) for the specified type of encoding
+	 * @param encodingType - The type of encoding
+	 * @returns The terminator byte(s)
+	 */
+	public static getTerminator(encodingType: TextEncoding): Buffer;
+
+	/**
+	 *  Get the terminator byte(s) for the specified type of encoding from the byte representation of the encoding type
+	 * @param encodingByte - The byte specifying the type of encoding
+	 * @returns The terminator byte(s)
+	 */
+	public static getTerminator(encodingByte: number): Buffer;
+	public static getTerminator(encoding: TextEncoding | number){
+		const encodingType = typeof encoding === "string" ? encoding : this.getEncoding(encoding);
+
+		return this.getNullByteLength(encodingType) === 2 ?
+			Buffer.from(new Uint8Array([ 0x00, 0x00 ])) :
+			Buffer.from(new Uint8Array([ 0x00 ]));
+	}
+
+	/**
 	 * Encode an integer to be synchsafe
 	 * @param value - The value of the integer to encode
 	 * @returns The encoded integer

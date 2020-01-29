@@ -56,15 +56,13 @@ export default class UserDefinedURLLinkFrame extends Frame {
 
 			const encodingType = Utils.getEncoding(dataOrDescription[headerInfo.headerSize]);
 
-			const nullByteLength = Utils.getNullByteLength(dataOrDescription[headerInfo.headerSize]);
-
-			const delimiter = nullByteLength === 2 ? Buffer.from(new Uint8Array([ 0x00, 0x00 ])) : 0x00;
+			const delimiter = Utils.getTerminator(encodingType);
 
 			const splitPoint = dataOrDescription.indexOf(delimiter, headerInfo.headerSize);
 
 			this.value = {
 				description: dataOrDescription.slice(headerInfo.headerSize, splitPoint).toString(encodingType),
-				value: dataOrDescription.slice(splitPoint + nullByteLength).toString()
+				value: dataOrDescription.slice(splitPoint + delimiter.length).toString()
 			};
 		} else {
 			this.value = {
@@ -83,7 +81,7 @@ export default class UserDefinedURLLinkFrame extends Frame {
 		return Buffer.concat([
 			Buffer.from(new Uint8Array([ Utils.getEncodingByte(encodingOptions.textEncoding) ])),
 			Buffer.from(this.value.description, encodingOptions.textEncoding),
-			Buffer.from(new Uint8Array(Utils.getNullByteLength(encodingOptions.textEncoding) === 2 ? [ 0, 0 ] : [ 0 ])),
+			Utils.getTerminator(encodingOptions.textEncoding),
 			Buffer.from(this.value.value, "latin1")
 		]);
 	}
