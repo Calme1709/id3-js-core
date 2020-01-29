@@ -1,26 +1,7 @@
 import Utils from '../../utils';
 import { IEncodingOptions } from '../../encodingOptions';
 import { Buffer } from 'buffer';
-
-/**
- * The flags stored with a frame in a tag adhering to the ID3v2.3 spec
- */
-export interface IV3FrameFlags {
-	discardOnTagAlteration: boolean;
-	discardOnFileAlteration: boolean;
-	readOnly: boolean;
-	compression: boolean;
-	encryption: boolean;
-	groupingIdentity: boolean;
-}
-
-/**
- * The flags stored with a frame in a tag adhering to the ID3v2.4 spec
- */
-export interface IV4FrameFlags extends IV3FrameFlags {
-	unsynchronisation: boolean;
-	dataLengthIndicator: boolean;
-}
+import { IV3FrameFlags, IV4FrameFlags } from '../../decoder/decodeFrameHeader';
 
 /**
  * A class for managing the frame flags
@@ -31,9 +12,9 @@ export default class FrameFlagManager {
 	public get supportedVersions(){
 		//If none of the frame format flags are specified are set then technically
 		//ID3v2 can technically be supported by excluding all of the flags
-		if(this.getBinaryRepresentation(4).substring(9) === "0".repeat(7)){
+		if(this.flags === undefined || this.getBinaryRepresentation(4).substring(9) === "0".repeat(7)){
 			return [ 2, 3, 4 ];
-		} else if((this.flags === undefined || !("dataLengthIndicator" in this.flags)) || (!this.flags.dataLengthIndicator && !this.flags.unsynchronisation)){
+		} else if(!("dataLengthIndicator" in this.flags) || !(this.flags.dataLengthIndicator || this.flags.unsynchronisation)){
 			return [ 3, 4 ];
 		} else {
 			return [ 4 ];
@@ -89,44 +70,6 @@ export default class FrameFlagManager {
 				break;
 			default:
 				throw new Error(`Invalid ID3v2 version for flags: ${ID3Version}`);
-		}
-	}
-
-	/**
-	 * Decode a flag buffer and set the flags accordingly
-	 * @param flagBuffer - The two byte buffer to decode
-	 * @param ID3Version - The version of the ID3v2 spec that the tag this flag buffer was extracted from is following
-	 */
-	public setFlags(flagBuffer: Buffer, ID3Version: 3 | 4): void;
-
-	/**
-	 * Set the flags to a user defined object
-	 * @param flags - The flags to set
-	 */
-	public setFlags(flags: IV3FrameFlags | IV4FrameFlags | undefined): void;
-	public setFlags(flagsOrBuffer: Buffer | IV3FrameFlags | IV4FrameFlags | undefined, ID3Version?: 3 | 4){
-		if(flagsOrBuffer instanceof Buffer){
-			const flags = flagsOrBuffer.readInt16BE(0).toString(2).split("").map(bit => bit === "1");
-
-			this.flags = ID3Version === 3 ? {
-				discardOnTagAlteration: flags[0],
-				discardOnFileAlteration: flags[1],
-				readOnly: flags[2],
-				compression: flags[8],
-				encryption: flags[9],
-				groupingIdentity: flags[10]
-			} : {
-				discardOnTagAlteration: flags[1],
-				discardOnFileAlteration: flags[2],
-				readOnly: flags[3],
-				groupingIdentity: flags[9],
-				compression: flags[12],
-				encryption: flags[13],
-				unsynchronisation: flags[14],
-				dataLengthIndicator: flags[15]
-			};
-		} else {
-			this.flags = flagsOrBuffer;
 		}
 	}
 
