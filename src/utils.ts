@@ -26,16 +26,26 @@ export default class Utils {
 
 	/**
 	 * Get the length of the null byte depending on the type of encoding
+	 * @param encodingType - The type of encoding
+	 * @returns The length of the null byte
+	 */
+	public static getNullByteLength(encodingType: TextEncoding): 1 | 2;
+
+	/**
+	 * Get the length of the null byte depending on the number representation of the encoding type
 	 * @param encodingByte - The byte specifying the type of encoding
 	 * @returns The length of the null byte
 	 */
-	public static getNullByteLength(encodingByte: number){
-		switch(encodingByte){
-			case 0x01:
-			case 0x02:
+	public static getNullByteLength(encodingByte: number) : 1 | 2;
+	public static getNullByteLength(encoding: number | TextEncoding){
+		const encodingType = typeof encoding === "string" ? encoding : this.getEncoding(encoding);
+
+		switch(encodingType){
+			case "utf16le":
+			case "utf16be":
 				return 2;
-			case 0x00:
-			case 0x03:
+			case "latin1":
+			case "utf8":
 			default:
 				return 1;
 		}
@@ -51,11 +61,11 @@ export default class Utils {
 			case 0x00:
 				return "latin1";
 			case 0x01:
-				return "UTF-16";
+				return "utf16le";
 			case 0x02:
-				return "UTF-16BE";
+				return "utf16be";
 			case 0x03:
-				return "UTF-8";
+				return "utf8";
 			default:
 				throw new Error(`Unrecognised text encoding byte: ${encodingByte}`);
 		}
@@ -70,11 +80,11 @@ export default class Utils {
 		switch(encodingType){
 			case "latin1":
 				return 0x00;
-			case "UTF-16":
+			case "utf16le":
 				return 0x01;
-			case "UTF-16BE":
+			case "utf16be":
 				return 0x02;
-			case "UTF-8":
+			case "utf8":
 				return 0x03;
 			default:
 				throw new Error(`Unrecognised encoding type: ${encodingType}`);
@@ -149,6 +159,12 @@ export default class Utils {
 		return out;
 	}
 
+	/**
+	 * Remap an identifier from it's 3 character version (ID3v2.2) to it's 4 character version (ID3v2.3+) or vice versa
+	 * @param identifier - The identifier to remap
+	 * @param targetID3Version - The target version to remap the identifier to
+	 * @returns The remapped identifier
+	 */
 	public static getCorrectIdentifier(identifier: string, targetID3Version: 2 | 3 | 4){
 		const remappedFrames = [
 			[ "BUF", "RBUF" ],
