@@ -8,7 +8,8 @@ import {
 	URLLinkFrame,
 	UFIDFrame,
 	UserDefinedTextInformationFrame,
-	UserDefinedURLLinkFrame
+	UserDefinedURLLinkFrame,
+	InvolvedPeopleListFrame
 } from "../frames";
 
 export default class Decoder {
@@ -22,8 +23,6 @@ export default class Decoder {
 		const tagHeader = decodeTagHeader(data.slice(tagOffset));
 
 		const framesData = data.slice(tagOffset + tagHeader.headerSize, tagOffset + tagHeader.tagSize);
-
-		console.log(framesData.length);
 
 		let index = 0;
 		const frames: Frame[] = [];
@@ -54,12 +53,14 @@ export default class Decoder {
 						frames.push(new UserDefinedURLLinkFrame(frameData, tagHeader.version));
 						break;
 
+					case "IPL":
+					case "IPLS":
+						frames.push(new InvolvedPeopleListFrame(frameData, tagHeader.version));
+						break;
+
 					default:
 						throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
 				}
-
-				console.log(frameHeader.identifier);
-				//SWITCH
 			}
 
 			index += frameHeader.frameSize;
