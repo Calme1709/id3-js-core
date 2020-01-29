@@ -64,7 +64,7 @@ export default class UserDefinedTextInformationFrame extends Frame {
 
 			this.value = {
 				description: dataOrDescription.slice(headerInfo.headerSize, splitPoint).toString(encodingType),
-				value: dataOrDescription.slice(splitPoint + nullByteLength).toString()
+				value: dataOrDescription.slice(splitPoint + nullByteLength).toString(encodingType)
 			};
 		} else {
 			this.value = {
