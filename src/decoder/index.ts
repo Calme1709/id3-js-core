@@ -1,9 +1,14 @@
 import decodeTagHeader from "./decodeTagHeader";
 import decodeFrameHeader from "./decodeFrameHeader";
 import { Buffer } from "buffer";
-import Frame from "../frames/frameComponents/frame";
 
-import { TextInformationFrame, URLLinkFrame } from "../frames";
+import {
+	Frame,
+	TextInformationFrame,
+	URLLinkFrame,
+	UFIDFrame,
+	UserDefinedTextInformationFrame
+} from "../frames";
 
 export default class Decoder {
 	public static decode(data: Buffer){
@@ -32,6 +37,21 @@ export default class Decoder {
 			} else if(frameHeader.identifier[0] === "W" && ![ "WXX", "WXXX" ].includes(frameHeader.identifier)) {
 				frames.push(new URLLinkFrame(frameData, tagHeader.version));
 			} else {
+				switch(frameHeader.identifier){
+					case "UFI":
+					case "UFID":
+						frames.push(new UFIDFrame(frameData, tagHeader.version));
+						break;
+
+					case "TXX":
+					case "TXXX":
+						frames.push(new UserDefinedTextInformationFrame(frameData, tagHeader.version));
+						break;
+
+					default:
+						throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
+				}
+
 				console.log(frameHeader.identifier);
 				//SWITCH
 			}
