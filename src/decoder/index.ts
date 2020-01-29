@@ -7,7 +7,8 @@ import {
 	TextInformationFrame,
 	URLLinkFrame,
 	UFIDFrame,
-	UserDefinedTextInformationFrame
+	UserDefinedTextInformationFrame,
+	UserDefinedURLLinkFrame
 } from "../frames";
 
 export default class Decoder {
@@ -46,6 +47,11 @@ export default class Decoder {
 					case "TXX":
 					case "TXXX":
 						frames.push(new UserDefinedTextInformationFrame(frameData, tagHeader.version));
+						break;
+
+					case "WXX":
+					case "WXXX":
+						frames.push(new UserDefinedURLLinkFrame(frameData, tagHeader.version));
 						break;
 
 					default:
