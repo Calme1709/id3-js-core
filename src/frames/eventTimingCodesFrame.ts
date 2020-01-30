@@ -120,7 +120,7 @@ export default class EventTimingCodesFrame extends Frame {
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
 	 */
-	public constructor(data: Buffer, ID3Version: number);
+	public constructor(data: Buffer, ID3Version: 2 | 3 | 4);
 
 	/**
 	 * Create a new event timing codes frame
@@ -132,7 +132,7 @@ export default class EventTimingCodesFrame extends Frame {
 		super();
 
 		if(dataOrValue instanceof Buffer){
-			const headerInfo = this.decodeHeader(dataOrValue, ID3Version);
+			const headerInfo = this.decodeHeader(dataOrValue, ID3Version as 2 | 3 | 4);
 
 			const timestampUnit = dataOrValue[headerInfo.headerSize] === 1 ? TimestampUnit.MPEGFrames : TimestampUnit.Milliseconds;
 
@@ -160,7 +160,7 @@ export default class EventTimingCodesFrame extends Frame {
 	 * @param encodingOptions - The encoding options to encode with
 	 * @returns The encoded content
 	 */
-	public encodeContent(encodingOptions: IEncodingOptions){
+	public encodeContent(){
 		return Buffer.concat([
 			Buffer.from(new Uint8Array([ this.value.timestampUnit ])),
 			Buffer.concat(this.value.events.map(event => {

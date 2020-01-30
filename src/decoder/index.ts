@@ -1,6 +1,8 @@
 import decodeTagHeader from "./decodeTagHeader";
 import decodeFrameHeader from "./decodeFrameHeader";
 import { Buffer } from "buffer";
+import MusicCDIdentifierFrame from '../frames/musicCDIdentifierFrame';
+import EventTimingCodesFrame from '../frames/eventTimingCodesFrame';
 
 import {
 	Frame,
@@ -56,6 +58,16 @@ export default class Decoder {
 					case "IPL":
 					case "IPLS":
 						frames.push(new InvolvedPeopleListFrame(frameData, tagHeader.version));
+						break;
+
+					case "MCI":
+					case "MCDI":
+						frames.push(new MusicCDIdentifierFrame(frameData, tagHeader.version));
+						break;
+
+					case "ETC":
+					case "ETCO":
+						frames.push(new EventTimingCodesFrame(framesData, tagHeader.version));
 						break;
 
 					default:
