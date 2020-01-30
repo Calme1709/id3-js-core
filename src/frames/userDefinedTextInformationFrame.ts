@@ -65,6 +65,8 @@ export default class UserDefinedTextInformationFrame extends Frame {
 				value: dataOrDescription.slice(splitPoint + delimiter.length).toString(encodingType)
 			};
 		} else {
+			this.identifier = "TXXX";
+
 			this.value = {
 				description: dataOrDescription,
 				value: ID3VersionOrValue as string

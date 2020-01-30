@@ -65,6 +65,8 @@ export default class UserDefinedURLLinkFrame extends Frame {
 				value: dataOrDescription.slice(splitPoint + delimiter.length).toString()
 			};
 		} else {
+			this.identifier = "WXXX";
+
 			this.value = {
 				description: dataOrDescription,
 				value: ID3VersionOrValue as string

@@ -76,6 +76,8 @@ export default class InvolvedPeopleListFrame extends Frame {
 
 			this.value = involvedPeople;
 		} else {
+			this.identifier = "IPLS";
+
 			this.value = dataOrValue;
 		}
 	}
