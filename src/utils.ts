@@ -1,14 +1,16 @@
 import { Buffer } from "buffer";
 import { TextEncoding } from './encodingOptions';
 
-/**
- * The header stored in an ID3 tag
- */
-export interface ITagHeader<version, FlagType> {
-	majorVersion: version;
-	revisionVersion: number;
-	tagSize: number;
-	flags: FlagType;
+export enum TimestampUnit {
+	/**
+	 * The timestamp format is absolute time, using MPEG frames as the unit
+	 */
+	MPEGFrames = 1,
+
+	/**
+	 * The timestamp format is absolute time, using milliseconds as the unit
+	 */
+	Milliseconds = 2
 }
 
 /**
