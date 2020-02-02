@@ -12,7 +12,8 @@ import {
 	InvolvedPeopleListFrame,
 	MusicCDIdentifierFrame,
 	EventTimingCodesFrame,
-	MPEGLocationLookupTableFrame
+	MPEGLocationLookupTableFrame,
+	SynchronisedTempoCodesFrame
 } from "../frames";
 
 /**
@@ -82,6 +83,11 @@ export default class Decoder {
 					case "MLL":
 					case "MLLT":
 						frames.push(new MPEGLocationLookupTableFrame(framesData, tagHeader.version));
+						break;
+
+					case "STC":
+					case "SYTC":
+						frames.push(new SynchronisedTempoCodesFrame(framesData, tagHeader.version));
 						break;
 
 					default:
