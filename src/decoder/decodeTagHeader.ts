@@ -25,7 +25,14 @@ interface IHeader {
  * The data that can be stored in the header of a tag that is following the ID3v2.2 spec
  */
 export interface IV2Header extends IHeader {
+	/**
+	 * The version of the ID3v2 spec that this tag adheres to
+	 */
 	version: 2;
+
+	/**
+	 * Whether this tag has undergone compression
+	 */
 	compression: boolean;
 }
 
@@ -33,9 +40,24 @@ export interface IV2Header extends IHeader {
  * The data that can be stored in the header of a tag that is following the ID3v2.3 spec
  */
 export interface IV3Header extends IHeader {
+	/**
+	 * The version of the ID3v2 spec that this tag adheres to
+	 */
 	version: 3;
+
+	/**
+	 * Whether or not this tag is in an experimental stage
+	 */
 	experimental: boolean;
+
+	/**
+	 * The CRC data that accompanies this tag
+	 */
 	crcData?: number;
+
+	/**
+	 * The size of the padding in this tags
+	 */
 	paddingSize?: number;
 }
 
@@ -105,10 +127,29 @@ interface ITagRestrictions {
  * The data that is stored in the header of a tag that is following the ID3v2.4 spec
  */
 export interface IV4Header extends IHeader {
+	/**
+	 * The version of the ID3v2 spec that this tag adheres to
+	 */
 	version: 4;
+
+	/**
+	 * Whether or not this tag is in an experimental stage
+	 */
 	experimental: boolean;
+
+	/**
+	 * Whether or not there is a footer present in this tag
+	 */
 	footerPresent: boolean;
+
+	/**
+	 * The CRC data that accompanies this tag
+	 */
 	crcData?: number;
+
+	/**
+	 * Whether or not this tag is an update to a previous tag in the file
+	 */
 	tagIsAnUpdate?: boolean;
 
 	/**
@@ -117,6 +158,11 @@ export interface IV4Header extends IHeader {
 	tagRestrictions?: ITagRestrictions;
 }
 
+/**
+ * Decode the header of a ID3 tag
+ * @param data - The data that contains the tag header
+ * @returns The decoded tag headers
+ */
 export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 	const version = data[3];
 	const tagSize = Utils.decodeSynchsafeInteger(version === 2 ? data.readIntBE(6, 3) : data.readInt32BE(6));
@@ -142,9 +188,7 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 
 				paddingSize = Utils.decodeSynchsafeInteger(data.readInt32BE(14));
 
-				const extendedFlags = data.readInt16BE(14).toString(2).split("").map(bit => bit === "1");
-
-				if(extendedFlags[0]){
+				if(data.readInt16BE(14).toString(2).split("").map(bit => bit === "1")[0]){
 					crcData = data.readInt32BE(20);
 				}
 			}
