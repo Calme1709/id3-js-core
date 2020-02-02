@@ -1,6 +1,5 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encodingOptions';
 import { TimestampUnit } from '../utils';
 
 /**
