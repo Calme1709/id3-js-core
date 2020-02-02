@@ -1,8 +1,6 @@
 import decodeTagHeader from "./decodeTagHeader";
 import decodeFrameHeader from "./decodeFrameHeader";
 import { Buffer } from "buffer";
-import MusicCDIdentifierFrame from '../frames/musicCDIdentifierFrame';
-import EventTimingCodesFrame from '../frames/eventTimingCodesFrame';
 
 import {
 	Frame,
@@ -11,10 +9,21 @@ import {
 	UFIDFrame,
 	UserDefinedTextInformationFrame,
 	UserDefinedURLLinkFrame,
-	InvolvedPeopleListFrame
+	InvolvedPeopleListFrame,
+	MusicCDIdentifierFrame,
+	EventTimingCodesFrame,
+	MPEGLocationLookupTableFrame
 } from "../frames";
 
+/**
+ * The decoder class
+ */
 export default class Decoder {
+	/**
+	 * Decode a tag from a buffer
+	 * @param data - The buffer that contains the ID3 tag to decode
+	 * @returns - The decoded tag
+	 */
 	public static decode(data: Buffer){
 		const tagOffset = data.indexOf("ID3");
 
@@ -68,6 +77,11 @@ export default class Decoder {
 					case "ETC":
 					case "ETCO":
 						frames.push(new EventTimingCodesFrame(framesData, tagHeader.version));
+						break;
+
+					case "MLL":
+					case "MLLT":
+						frames.push(new MPEGLocationLookupTableFrame(framesData, tagHeader.version));
 						break;
 
 					default:

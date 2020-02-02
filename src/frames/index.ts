@@ -7,3 +7,4 @@ export { default as UserDefinedURLLinkFrame } from "./userDefinedURLLinkFrame";
 export { default as InvolvedPeopleListFrame } from "./involvedPeopleListFrame";
 export { default as MusicCDIdentifierFrame } from "./musicCDIdentifierFrame";
 export { default as EventTimingCodesFrame } from "./eventTimingCodesFrame";
+export { default as MPEGLocationLookupTableFrame } from "./mpegLocationLookupTableFrame";
