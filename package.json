@@ -21,7 +21,7 @@
 		"url": "https://github.com/Calme1709/id3-js"
 	},
 	"devDependencies": {
-		"tslint": "5.20.1",
+		"tslint": "^6.0.0",
 		"tslint-eslint-rules": "5.4.0",
 		"typescript": "^3.7.5"
 	},
