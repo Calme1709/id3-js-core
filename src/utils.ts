@@ -1,6 +1,10 @@
 import { Buffer } from "buffer";
 import { TextEncoding } from './encodingOptions';
+import { remappedFrames } from "./data.json";
 
+/**
+ * Possible units that timestamps in an ID3 tag can be stored as
+ */
 export enum TimestampUnit {
 	/**
 	 * The timestamp format is absolute time, using MPEG frames as the unit
@@ -170,71 +174,6 @@ export default class Utils {
 	 * @returns The remapped identifier
 	 */
 	public static getCorrectIdentifier(identifier: string, targetID3Version: 2 | 3 | 4){
-		const remappedFrames = [
-			[ "BUF", "RBUF" ],
-			[ "CNT", "PCNT" ],
-			[ "COM", "COMM" ],
-			[ "CRA", "AENC" ],
-			[ "ETC", "ETCO" ],
-			[ "EQU", "EQUA" ],
-			[ "GEO", "GEOB" ],
-			[ "IPL", "IPLS" ],
-			[ "LNK", "LINK" ],
-			[ "MCI", "MCDI" ],
-			[ "MLL", "MLLT" ],
-			[ "PIC", "APIC" ],
-			[ "POP", "POPM" ],
-			[ "REV", "RVRB" ],
-			[ "RVA", "RVAD" ],
-			[ "SLT", "SYLT" ],
-			[ "STC", "SYTC" ],
-			[ "TAL", "TALB" ],
-			[ "TBP", "TBPM" ],
-			[ "TCM", "TCOM" ],
-			[ "TCO", "TCON" ],
-			[ "TCR", "TCOP" ],
-			[ "TDA", "TDAT" ],
-			[ "TDY", "TDLY" ],
-			[ "TEN", "TENC" ],
-			[ "TFT", "TFLT" ],
-			[ "TIM", "TIME" ],
-			[ "TKE", "TKEY" ],
-			[ "TLA", "TLAN" ],
-			[ "TLE", "TLEN" ],
-			[ "TMT", "TMED" ],
-			[ "TOA", "TOPE" ],
-			[ "TOF", "TOFN" ],
-			[ "TOL", "TOLY" ],
-			[ "TOR", "TORY" ],
-			[ "TOT", "TOAL" ],
-			[ "TP1", "TPE1" ],
-			[ "TP2", "TPE2" ],
-			[ "TP3", "TPE3" ],
-			[ "TP4", "TPE4" ],
-			[ "TPA", "TPOS" ],
-			[ "TPB", "TPUB" ],
-			[ "TRC", "TSRC" ],
-			[ "TRD", "TRDA" ],
-			[ "TRK", "TRCK" ],
-			[ "TSI", "TSIZ" ],
-			[ "TSS", "TSSE" ],
-			[ "TT1", "TIT1" ],
-			[ "TT2", "TIT2" ],
-			[ "TT3", "TIT3" ],
-			[ "TXT", "TEXT" ],
-			[ "TXX", "TXXX" ],
-			[ "TYE", "TYER" ],
-			[ "UFI", "UFID" ],
-			[ "ULT", "USLT" ],
-			[ "WAF", "WOAF" ],
-			[ "WAR", "WOAR" ],
-			[ "WAS", "WOAS" ],
-			[ "WCM", "WCOM" ],
-			[ "WCP", "WCOP" ],
-			[ "WPB", "WPUB" ],
-			[ "WXX", "WXXX" ]
-		];
-
 		const originalID3Version = identifier.length === 3 ? 2 : 3;
 
 		if(originalID3Version === 3 && targetID3Version === 4 || originalID3Version === targetID3Version){

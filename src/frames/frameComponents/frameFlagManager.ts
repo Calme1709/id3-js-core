@@ -2,6 +2,7 @@ import Utils from '../../utils';
 import { IEncodingOptions } from '../../encodingOptions';
 import { Buffer } from 'buffer';
 import { IV3FrameFlags, IV4FrameFlags } from '../../decoder/decodeFrameHeader';
+import { framesToBeDiscardedOnFileAlter } from "../../data.json";
 
 /**
  * A class for managing the frame flags
@@ -28,24 +29,6 @@ export default class FrameFlagManager {
 	 * @param ID3Version - The version of the ID3v2 spec to adhere to
 	 */
 	public setDefaultFlags(identifier: string, ID3Version: 3 | 4){
-		const framesToBeDiscardedOnFileAlter = [
-			"ASPI",
-			"AENC",
-			"ETCO",
-			"EQUA",
-			"EQU2",
-			"MLLT",
-			"POSS",
-			"SEEK",
-			"SYLT",
-			"SYTC",
-			"RVAD",
-			"RVA2",
-			"TENC",
-			"TLEN",
-			"TSIZ"
-		];
-
 		const defaultFlags: IV3FrameFlags = {
 			discardOnFileAlteration: framesToBeDiscardedOnFileAlter.includes(Utils.getCorrectIdentifier(identifier, 3)),
 			discardOnTagAlteration: false,

@@ -24,7 +24,8 @@
 		"esModuleInterop": true,
 		"watch": false,
 		"experimentalDecorators": true,
-		"declaration": true
+		"declaration": true,
+		"resolveJsonModule": true
 	},
 	"files": [
 		"src/index.ts"
