@@ -75,33 +75,22 @@ export default class MPEGLocationLookupTableFrame extends Frame {
 
 	/**
 	 * Create a new MPEG location lookup table frame
-	 * @param identifier - The identifier of this frame
 	 * @param value - The value of this MPEG location lookup table frame
 	 */
-	public constructor(
-		MPEGFramesBetweenReferences: number,
-		bytesBetweenReferences: number,
-		millisecondsBetweenReferences: number,
-		deviationOfReferences: IReferenceDeviation[]
-	);
+	public constructor(value: IMPEGLocationLookupTableValue);
 
-	public constructor(
-		dataOrMPEGFramesBetweenReferences: Buffer | number,
-		ID3VersionOrBytesBetweenReferences: number,
-		millisecondsBetweenReferences?: number,
-		deviationOfReferences?: IReferenceDeviation[]
-	){
+	public constructor(dataOrValue: Buffer | IMPEGLocationLookupTableValue, ID3Version?: number){
 		super();
 
-		if(dataOrMPEGFramesBetweenReferences instanceof Buffer){
-			const headerInfo = this.decodeHeader(dataOrMPEGFramesBetweenReferences, ID3VersionOrBytesBetweenReferences as 3 | 4);
+		if(dataOrValue instanceof Buffer){
+			const headerInfo = this.decodeHeader(dataOrValue, ID3Version as 3 | 4);
 
 			const deviations: IReferenceDeviation[] = [];
 
-			const bitsForByteDeviation = dataOrMPEGFramesBetweenReferences[8];
-			const bitsForMillisecondsDeviation = dataOrMPEGFramesBetweenReferences[9];
+			const bitsForByteDeviation = dataOrValue[headerInfo.headerSize + 8];
+			const bitsForMillisecondsDeviation = dataOrValue[headerInfo.headerSize + 9];
 
-			const referencesData = dataOrMPEGFramesBetweenReferences.slice(10);
+			const referencesData = dataOrValue.slice(headerInfo.headerSize + 10);
 
 			const referencesString = referencesData.readIntBE(0, referencesData.length).toString(2);
 
@@ -113,20 +102,15 @@ export default class MPEGLocationLookupTableFrame extends Frame {
 			}
 
 			this.value = {
-				MPEGFramesBetweenReferences: dataOrMPEGFramesBetweenReferences.readInt16BE(headerInfo.headerSize),
-				bytesBetweenReferences: dataOrMPEGFramesBetweenReferences.readIntBE(2, 3),
-				millisecondsBetweenReferences: dataOrMPEGFramesBetweenReferences.readIntBE(5, 3),
+				MPEGFramesBetweenReferences: dataOrValue.readInt16BE(headerInfo.headerSize),
+				bytesBetweenReferences: dataOrValue.readIntBE(headerInfo.headerSize + 2, 3),
+				millisecondsBetweenReferences: dataOrValue.readIntBE(headerInfo.headerSize + 5, 3),
 				deviationOfReferences: deviations
 			};
 		} else {
 			this.identifier = "MLLT";
 
-			this.value = {
-				MPEGFramesBetweenReferences: dataOrMPEGFramesBetweenReferences,
-				bytesBetweenReferences: ID3VersionOrBytesBetweenReferences,
-				millisecondsBetweenReferences: millisecondsBetweenReferences as number,
-				deviationOfReferences: deviationOfReferences as IReferenceDeviation[]
-			};
+			this.value = dataOrValue;
 		}
 	}
 
