@@ -58,10 +58,10 @@ export default class UserDefinedURLLinkFrame extends Frame {
 
 			const delimiter = Utils.getTerminator(encodingType);
 
-			const splitPoint = dataOrDescription.indexOf(delimiter, headerInfo.headerSize);
+			const splitPoint = dataOrDescription.indexOf(delimiter, headerInfo.headerSize + 1);
 
 			this.value = {
-				description: dataOrDescription.slice(headerInfo.headerSize, splitPoint).toString(encodingType),
+				description: dataOrDescription.slice(headerInfo.headerSize + 1, splitPoint).toString(encodingType),
 				value: dataOrDescription.slice(splitPoint + delimiter.length).toString()
 			};
 		} else {
