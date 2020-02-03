@@ -68,10 +68,7 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 	 * @param identifier - The identifier of this frame
 	 * @param value - The value of this synchronised tempo codes frame
 	 */
-	public constructor(
-		value: ISynchronisedTempoCodesValue
-	);
-
+	public constructor(value: ISynchronisedTempoCodesValue);
 	public constructor(dataOrValue: Buffer | ISynchronisedTempoCodesValue, ID3Version?: number){
 		super();
 
