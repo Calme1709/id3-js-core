@@ -64,7 +64,7 @@ export interface IV3Header extends IHeader {
 /**
  * The restrictions that can be placed upon a tag
  */
-interface ITagRestrictions {
+export interface ITagRestrictions {
 	/**
 	 * Restrictions on the size of the tag;
 	 *

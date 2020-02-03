@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { TextEncoding } from './encodingOptions';
+import { TextEncoding } from './encoder/encodingOptions';
 import { remappedFrames } from "./data.json";
 
 /**

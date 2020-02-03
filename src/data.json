@@ -79,5 +79,28 @@
 		"TENC",
 		"TLEN",
 		"TSIZ"
-    ]
+    ],
+    "defaultEncodingOptions": {
+        "4": {
+            "textEncoding": "utf8",
+			"ID3Version": 4,
+			"unsynchronisation": false,
+			"experimental": false,
+			"tagIsAnUpdate": false
+        },
+        "3": {
+            "textEncoding": "utf8",
+			"ID3Version": 3,
+			"unsynchronisation": false,
+			"experimental": false,
+			"tagIsAnUpdate": false
+        },
+        "2": {
+            "textEncoding": "utf8",
+			"ID3Version": 2,
+			"unsynchronisation": false,
+			"experimental": false,
+			"tagIsAnUpdate": false
+        }
+    }
 }
