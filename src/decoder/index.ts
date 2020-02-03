@@ -13,7 +13,8 @@ import {
 	MusicCDIdentifierFrame,
 	EventTimingCodesFrame,
 	MPEGLocationLookupTableFrame,
-	SynchronisedTempoCodesFrame
+	SynchronisedTempoCodesFrame,
+	UnsynchronisedLyricsFrame
 } from "../frames";
 
 /**
@@ -88,6 +89,11 @@ export default class Decoder {
 					case "STC":
 					case "SYTC":
 						frames.push(new SynchronisedTempoCodesFrame(framesData, tagHeader.version));
+						break;
+
+					case "ULT":
+					case "USLT":
+						frames.push(new UnsynchronisedLyricsFrame(framesData, tagHeader.version));
 						break;
 
 					default:
