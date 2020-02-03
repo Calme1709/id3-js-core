@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encodingOptions';
+import { IEncodingOptions } from '../encoder/encodingOptions';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
 
 /**
  * A basic URL Link frame
@@ -67,5 +68,26 @@ export default class URLLinkFrame extends Frame {
 	 */
 	public encodeContent(encodingOptions: IEncodingOptions){
 		return Buffer.from(this.value, encodingOptions.textEncoding);
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(version: number): IVersionSupport{
+		const addedInV3 = [ "WORS", "WPAY" ];
+
+		if(version === 2 && addedInV3.includes(this.identifier)){
+			return {
+				supportsVersion: false,
+				reason: `This frame was not added until ID3v2.3`
+			};
+		}
+
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

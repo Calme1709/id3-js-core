@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
 
 /**
  * The deviation of a reference from the milliseconds and bytes that were stated
@@ -60,11 +61,6 @@ export default class MPEGLocationLookupTableFrame extends Frame {
 	 * The value of this text frame
 	 */
 	public value: IMPEGLocationLookupTableValue;
-
-	/**
-	 * The supported ID3v2 versions
-	 */
-	protected contentSupportedVersions = [ 2, 3, 4 ];
 
 	/**
 	 * Decode a MPEG location lookup table frame from a buffer
@@ -167,5 +163,17 @@ export default class MPEGLocationLookupTableFrame extends Frame {
 				return referenceBuffer;
 			}))
 		]);
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(): IVersionSupport{
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

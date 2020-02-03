@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
 
 /**
  * A music cd identifier frame
@@ -19,11 +20,6 @@ export default class MusicCDIdentifierFrame extends Frame {
 	 * The value of this text frame
 	 */
 	public value: Buffer;
-
-	/**
-	 * The supported ID3v2 versions
-	 */
-	protected contentSupportedVersions = [ 2, 3, 4 ];
 
 	/**
 	 * Decode a music cd identifier frame from a buffer
@@ -59,5 +55,17 @@ export default class MusicCDIdentifierFrame extends Frame {
 	 */
 	public encodeContent(){
 		return this.value;
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(): IVersionSupport{
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

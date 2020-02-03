@@ -1,7 +1,8 @@
 import { Buffer } from 'buffer';
 import Utils from '../utils';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encodingOptions';
+import { IEncodingOptions } from '../encoder/encodingOptions';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
 
 /**
  * The information that is stored in a unsynchronised lyrics frame
@@ -30,11 +31,6 @@ export default class UnsynchronisedLyricsFrame extends Frame {
 	 * The value of this text frame
 	 */
 	public value: IUnsynchronisedLyricsValue;
-
-	/**
-	 * The supported ID3v2 versions
-	 */
-	protected readonly contentSupportedVersions = [ 2, 3, 4 ];
 
 	/**
 	 * Decode an unsynchronised lyrics frame from a buffer
@@ -86,5 +82,17 @@ export default class UnsynchronisedLyricsFrame extends Frame {
 			Utils.getTerminator(encodingOptions.textEncoding),
 			Buffer.from(this.value.value, encodingOptions.textEncoding)
 		]);
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(): IVersionSupport{
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

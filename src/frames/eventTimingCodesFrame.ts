@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
 import { TimestampUnit } from '../utils';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
 
 /**
  * A singular event that is stored within the event timing codes
@@ -110,11 +111,6 @@ export default class EventTimingCodesFrame extends Frame {
 	public value: IEventTimingCodesValue;
 
 	/**
-	 * The supported ID3v2 versions
-	 */
-	protected contentSupportedVersions = [ 2, 3, 4 ];
-
-	/**
 	 * Decode an event timing codes frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
@@ -173,5 +169,17 @@ export default class EventTimingCodesFrame extends Frame {
 				]);
 			}))
 		]);
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(): IVersionSupport{
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

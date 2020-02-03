@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
 import { TimestampUnit } from '../utils';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
 
 /**
  * A singular tempo code
@@ -50,11 +51,6 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 	 * The value of this text frame
 	 */
 	public value: ISynchronisedTempoCodesValue;
-
-	/**
-	 * The supported ID3v2 versions
-	 */
-	protected contentSupportedVersions = [ 2, 3, 4 ];
 
 	/**
 	 * Decode a synchronised tempo codes frame from a buffer
@@ -129,5 +125,17 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 				]);
 			}))
 		]);
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(): IVersionSupport{
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

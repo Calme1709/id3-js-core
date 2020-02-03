@@ -1,23 +1,18 @@
 import { Buffer } from "buffer";
-import { IEncodingOptions } from '../../encodingOptions';
+import { IEncodingOptions } from '../../encoder/encodingOptions';
 import Utils from '../../utils';
 import FrameFlagManager from './frameFlagManager';
 import decodeFrameHeader, { IV3FrameFlags, IV4FrameFlags } from "../../decoder/decodeFrameHeader";
+import { IVersionSupport } from '../../encoder/getSupportedTagVersions';
 
 /**
  * The base class that all frames derive from
  */
 export default abstract class Frame {
-	public get supportedVersions(){
-		return this.flagManager.supportedVersions.filter(version => this.contentSupportedVersions.includes(version));
-	}
-
 	public abstract identifier: string;
 	public abstract frameType: string;
 	// tslint:disable-next-line: no-any
 	public abstract value: any;
-
-	protected abstract contentSupportedVersions: number[];
 
 	private readonly flagManager = new FrameFlagManager();
 
@@ -27,6 +22,29 @@ export default abstract class Frame {
 
 	get flags(){
 		return this.flagManager.flags;
+	}
+
+	/**
+	 * Test if this frame can be encoded with a specified version
+	 * @param version - The version to test
+	 * @returns Whether this frame can be encoded with the specified version, and if not; the reason it cannot
+	 */
+	public supportsVersion(version: number): IVersionSupport{
+		const flagManagerSupportsVersion = this.flagManager.supportsVersion(version);
+		const contentSupportsVersion = this.contentSupportsVersion(version);
+
+		if(flagManagerSupportsVersion.supportsVersion && contentSupportsVersion.supportsVersion){
+			return {
+				supportsVersion: true,
+				reason: ""
+			};
+		}
+
+		if(!flagManagerSupportsVersion){
+			return flagManagerSupportsVersion;
+		}
+
+		return contentSupportsVersion;
 	}
 
 	/**
@@ -95,4 +113,6 @@ export default abstract class Frame {
 	public toString(){
 		return `${this.identifier}: ${JSON.stringify(this.value)}`;
 	}
+
+	protected abstract contentSupportsVersion(version: number): IVersionSupport;
 }

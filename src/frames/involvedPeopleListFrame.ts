@@ -1,7 +1,8 @@
 import { Buffer } from 'buffer';
 import Utils from '../utils';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encodingOptions';
+import { IEncodingOptions } from '../encoder/encodingOptions';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
 
 /**
  * The value that is stored in an involved people list frame
@@ -29,11 +30,6 @@ export default class InvolvedPeopleListFrame extends Frame {
 	 * The value of this frame
 	 */
 	public value: InvolvedPeopleListValue;
-
-	/**
-	 * The supported ID3v2 versions
-	 */
-	protected contentSupportedVersions = [ 2, 3 ];
 
 	/**
 	 * Decode a involved people list from a buffer
@@ -98,5 +94,24 @@ export default class InvolvedPeopleListFrame extends Frame {
 				terminator
 			])
 		));
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(version: number): IVersionSupport{
+		if(version === 4){
+			return {
+				supportsVersion: false,
+				reason: "Involed people list frame is not supported in ID3v2.4"
+			}
+		}
+
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

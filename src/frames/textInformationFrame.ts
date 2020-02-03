@@ -1,50 +1,13 @@
 import { Buffer } from 'buffer';
 import Utils from '../utils';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encodingOptions';
+import { IVersionSupport } from '../encoder/getSupportedTagVersions';
+import { IEncodingOptions } from '../encoder/encodingOptions';
 
 /**
  * A basic text information frame
  */
 export default class TextInformationFrame extends Frame {
-	/**
-	 * The supported ID3v2 versions
-	 */
-	protected get contentSupportedVersions(){
-		const addedInV3 = [ "TRSN", "TRSO" ];
-		const addedInV4 = [
-			"TDEN",
-			"TDOR",
-			"TDRC",
-			"TDRL",
-			"TDTG",
-			"TIPL",
-			"TMCL",
-			"TMOO",
-			"TPRO",
-			"TSOA",
-			"TSOP",
-			"TSOT",
-			"TSST"
-		];
-
-		const removedInV4 = [ "TDAT", "TIME", "TORY", "TRDA", "TSIZ", "TYER" ];
-
-		if(addedInV4.includes(this.identifier)){
-			return [ 4 ];
-		}
-
-		if(addedInV3.includes(this.identifier)){
-			return [ 3, 4 ];
-		}
-
-		if(removedInV4.includes(Utils.getCorrectIdentifier(this.identifier, 3))){
-			return [ 2, 3 ];
-		}
-
-		return [ 2, 3, 4 ];
-	}
-
 	/**
 	 * The type of frame
 	 */
@@ -100,5 +63,70 @@ export default class TextInformationFrame extends Frame {
 			])),
 			Buffer.from(this.value, encodingOptions.textEncoding)
 		]);
+	}
+
+	/**
+	 * Test if the content of this frame can be encoded with the specified version
+	 * @param version - The version to test
+	 * @returns Whether the content can be encoded with the specified version
+	 */
+	protected contentSupportsVersion(version: number): IVersionSupport{
+		const addedInV3 = [ "TRSN", "TRSO" ];
+		const addedInV4 = [
+			"TDEN",
+			"TDOR",
+			"TDRC",
+			"TDRL",
+			"TDTG",
+			"TIPL",
+			"TMCL",
+			"TMOO",
+			"TPRO",
+			"TSOA",
+			"TSOP",
+			"TSOT",
+			"TSST"
+		];
+
+		const removedInV4 = [ "TDAT", "TIME", "TORY", "TRDA", "TSIZ", "TYER" ];
+
+		if(version === 2){
+			if(addedInV3.includes(this.identifier)){
+				return {
+					supportsVersion: false,
+					reason: "This frame is only supported in ID3v2.3+"
+				};
+			}
+
+			if(addedInV4.includes(this.identifier)){
+				return {
+					supportsVersion: false,
+					reason: "This frame is only supported in ID3v2.4"
+				};
+			}
+		}
+
+		if(version === 3){
+			if(addedInV4.includes(this.identifier)){
+				return {
+					supportsVersion: false,
+					reason: "This frame is only supported in ID3v2.4"
+				};
+			}
+		}
+
+		if(version === 4){
+			if(removedInV4.includes(Utils.getCorrectIdentifier(this.identifier, 3))){
+				return {
+					supportsVersion: false,
+					reason: "This frame was removed in ID3v2.4"
+				};
+			}
+		}
+
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 }

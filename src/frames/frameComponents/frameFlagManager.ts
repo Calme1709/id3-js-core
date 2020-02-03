@@ -1,8 +1,9 @@
 import Utils from '../../utils';
-import { IEncodingOptions } from '../../encodingOptions';
+import { IEncodingOptions } from '../../encoder/encodingOptions';
 import { Buffer } from 'buffer';
 import { IV3FrameFlags, IV4FrameFlags } from '../../decoder/decodeFrameHeader';
 import { framesToBeDiscardedOnFileAlter } from "../../data.json";
+import { IVersionSupport } from '../../encoder/getSupportedTagVersions';
 
 /**
  * A class for managing the frame flags
@@ -20,6 +21,80 @@ export default class FrameFlagManager {
 		} else {
 			return [ 4 ];
 		}
+	}
+
+	/**
+	 * Test if a specific version of the ID3v2 spec is supported depending on the flags that are set
+	 * @param version - The version to test
+	 * @returns - Whether the version is supported and if it is not; the reason it is not
+	 */
+	public supportsVersion(version: number): IVersionSupport{
+		switch(version){
+			case 2:
+				if(this.getBinaryRepresentation(4) !== "0".repeat(16)){
+					return {
+						supportsVersion: false,
+						reason: "There are flags set, this is not supported in ID3v2.2"
+					};
+				}
+
+				return {
+					supportsVersion: true,
+					reason: ""
+				};
+
+			case 3:
+				if((this.flags as IV4FrameFlags)?.unsynchronisation){
+					return {
+						supportsVersion: false,
+						reason: "The unsynchronisation flag is set, this is only supported in ID3v2.4"
+					};
+				}
+
+				if((this.flags as IV4FrameFlags)?.dataLengthIndicator){
+					return {
+						supportsVersion: false,
+						reason: "The data length indicator flag is set, this is only supported in ID3v2.4"
+					};
+				}
+
+				return {
+					supportsVersion: true,
+					reason: ""
+				};
+
+			case 4:
+				return {
+					supportsVersion: true,
+					reason: ""
+				};
+
+			default:
+				throw new Error(`Invalid ID3 version ${version}`);
+		}
+
+		if(this.flags === undefined || this.getBinaryRepresentation(4).substring(9) === "0".repeat(7)){
+			return {
+				supportsVersion: true,
+				reason: ""
+			};
+		}
+
+		if("dataLengthIndicator" in this.flags && this.flags.dataLengthIndicator && version !== 4){
+			return {
+				supportsVersion: false,
+				reason: "data length indicator flag is set, this is only supported in ID3v2.4"
+			};
+		}
+
+		if("unsynchronisation" in this.flags && this.flags.unsynchronisation && version !== 4){
+			return true
+		}
+
+		return {
+			supportsVersion: true,
+			reason: ""
+		};
 	}
 
 	/**
