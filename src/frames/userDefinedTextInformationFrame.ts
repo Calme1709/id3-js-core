@@ -2,7 +2,7 @@ import { Buffer } from 'buffer';
 import Utils from '../utils';
 import Frame from './frameComponents/frame';
 import { IEncodingOptions } from '../encoder/encodingOptions';
-import { IVersionSupport } from '../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../encoder/isVersionSupported';
 
 /**
  * The information that is stored in a user defined text information frame

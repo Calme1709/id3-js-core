@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { IVersionSupport } from '../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../encoder/isVersionSupported';
 
 /**
  * The information stored in a UFID frame

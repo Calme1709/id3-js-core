@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
 import { TimestampUnit } from '../utils';
-import { IVersionSupport } from '../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../encoder/isVersionSupported';
 
 /**
  * A singular event that is stored within the event timing codes

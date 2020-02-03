@@ -3,7 +3,7 @@ import { IEncodingOptions } from '../../encoder/encodingOptions';
 import Utils from '../../utils';
 import FrameFlagManager from './frameFlagManager';
 import decodeFrameHeader, { IV3FrameFlags, IV4FrameFlags } from "../../decoder/decodeFrameHeader";
-import { IVersionSupport } from '../../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../../encoder/isVersionSupported';
 
 /**
  * The base class that all frames derive from

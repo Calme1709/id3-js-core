@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import Utils from '../utils';
 import Frame from './frameComponents/frame';
-import { IVersionSupport } from '../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../encoder/isVersionSupported';
 import { IEncodingOptions } from '../encoder/encodingOptions';
 
 /**

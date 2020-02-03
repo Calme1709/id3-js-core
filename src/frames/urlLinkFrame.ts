@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
 import { IEncodingOptions } from '../encoder/encodingOptions';
-import { IVersionSupport } from '../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../encoder/isVersionSupported';
 
 /**
  * A basic URL Link frame

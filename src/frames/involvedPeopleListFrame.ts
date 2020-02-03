@@ -2,7 +2,7 @@ import { Buffer } from 'buffer';
 import Utils from '../utils';
 import Frame from './frameComponents/frame';
 import { IEncodingOptions } from '../encoder/encodingOptions';
-import { IVersionSupport } from '../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../encoder/isVersionSupported';
 
 /**
  * The value that is stored in an involved people list frame
@@ -106,7 +106,7 @@ export default class InvolvedPeopleListFrame extends Frame {
 			return {
 				supportsVersion: false,
 				reason: "Involed people list frame is not supported in ID3v2.4"
-			}
+			};
 		}
 
 		return {

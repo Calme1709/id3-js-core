@@ -3,25 +3,13 @@ import { IEncodingOptions } from '../../encoder/encodingOptions';
 import { Buffer } from 'buffer';
 import { IV3FrameFlags, IV4FrameFlags } from '../../decoder/decodeFrameHeader';
 import { framesToBeDiscardedOnFileAlter } from "../../data.json";
-import { IVersionSupport } from '../../encoder/getSupportedTagVersions';
+import { IVersionSupport } from '../../encoder/isVersionSupported';
 
 /**
  * A class for managing the frame flags
  */
 export default class FrameFlagManager {
 	public flags?: IV3FrameFlags | IV4FrameFlags;
-
-	public get supportedVersions(){
-		//If none of the frame format flags are specified are set then technically
-		//ID3v2 can technically be supported by excluding all of the flags
-		if(this.flags === undefined || this.getBinaryRepresentation(4).substring(9) === "0".repeat(7)){
-			return [ 2, 3, 4 ];
-		} else if(!("dataLengthIndicator" in this.flags) || !(this.flags.dataLengthIndicator || this.flags.unsynchronisation)){
-			return [ 3, 4 ];
-		} else {
-			return [ 4 ];
-		}
-	}
 
 	/**
 	 * Test if a specific version of the ID3v2 spec is supported depending on the flags that are set
@@ -72,29 +60,6 @@ export default class FrameFlagManager {
 			default:
 				throw new Error(`Invalid ID3 version ${version}`);
 		}
-
-		if(this.flags === undefined || this.getBinaryRepresentation(4).substring(9) === "0".repeat(7)){
-			return {
-				supportsVersion: true,
-				reason: ""
-			};
-		}
-
-		if("dataLengthIndicator" in this.flags && this.flags.dataLengthIndicator && version !== 4){
-			return {
-				supportsVersion: false,
-				reason: "data length indicator flag is set, this is only supported in ID3v2.4"
-			};
-		}
-
-		if("unsynchronisation" in this.flags && this.flags.unsynchronisation && version !== 4){
-			return true
-		}
-
-		return {
-			supportsVersion: true,
-			reason: ""
-		};
 	}
 
 	/**
