@@ -40,8 +40,6 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 		...(defaultEncodingOptions as {[key: string]: IEncodingOptions})[encodingVersion.toString()]
 	};
 
-	console.log(computedEncodingOptions);
-
 	const encodedFrames: Buffer[] = [];
 
 	for(const frame of frames){

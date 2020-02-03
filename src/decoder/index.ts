@@ -40,7 +40,7 @@ export default class Decoder {
 		let index = 0;
 		const frames: Frame[] = [];
 
-		while(index < tagHeader.tagSize - tagHeader.headerSize){
+		while(index < tagHeader.tagSize - tagHeader.headerSize && !(framesData[index] === 0x00 && framesData[index + 1] === 0x00)){
 			const frameHeader = decodeFrameHeader(framesData.slice(index), tagHeader.version);
 
 			const frameData = framesData.slice(index, index + frameHeader.frameSize);
