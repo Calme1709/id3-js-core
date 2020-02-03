@@ -2,14 +2,71 @@ import { Buffer } from "buffer";
 import Utils from '../utils';
 
 /**
+ * Data that is stored in (and about) the header of a singular frame
+ */
+export interface IFrameHeader {
+	/**
+	 * The size of the header (this includes any flag data)
+	 */
+	headerSize: number;
+
+	/**
+	 * The size of the frame (including the header)
+	 */
+	frameSize: number;
+
+	/**
+	 * The identifier of this frame
+	 */
+	identifier: string;
+
+	/**
+	 * The flags that are associated with this frame
+	 */
+	flags?: IV3FrameFlags | IV4FrameFlags;
+}
+
+/**
  * The flags stored with a frame in a tag adhering to the ID3v2.3 spec
  */
 export interface IV3FrameFlags {
+	/**
+	 * Whether this tag should be discarded on tag alteration.
+	 *
+	 * Default: false
+	 */
 	discardOnTagAlteration: boolean;
+
+	/**
+	 * Whether this tag should be discarded on file alteration
+	 *
+	 * Default: false excluding the following frames; ASPI, AENC, ETCO, EQUA, EQU2, MLLT, POSS, SEEK, SYLT, SYTC, RVAD,
+	 * RVA2, TENC, TLEN, and TSIZ which default to true
+	 */
 	discardOnFileAlteration: boolean;
+
+	/**
+	 * Whether this frame is readonly
+	 *
+	 * Default: false
+	 */
 	readOnly: boolean;
+
+	/**
+	 * Whether this frame has undergone compression using zlib
+	 *
+	 * Default: false
+	 */
 	compression: boolean;
+
+	/**
+	 * Whether this frame is encrypted
+	 */
 	encryption: boolean;
+
+	/**
+	 * Whether this frame belongs in a group with other frames
+	 */
 	groupingIdentity: boolean;
 }
 
@@ -17,7 +74,14 @@ export interface IV3FrameFlags {
  * The flags stored with a frame in a tag adhering to the ID3v2.4 spec
  */
 export interface IV4FrameFlags extends IV3FrameFlags {
+	/**
+	 * Whether this frame has undergone unsynchronisation
+	 */
 	unsynchronisation: boolean;
+
+	/**
+	 * Whether this frame has an attached data length indicator
+	 */
 	dataLengthIndicator: boolean;
 }
 
@@ -27,7 +91,7 @@ export interface IV4FrameFlags extends IV3FrameFlags {
  * @param ID3Version - The version of the ID3v2 spec to adhere to when decoding the header
  * @returns An object containing some information that was stored in, and about the header
  */
-export default (data: Buffer, ID3Version: 2 | 3 | 4) => {
+export default (data: Buffer, ID3Version: 2 | 3 | 4): IFrameHeader => {
 	const identifierLength = Utils.getIdentifierLength(ID3Version);
 
 	const identifier = data.slice(0, identifierLength).toString("latin1");
