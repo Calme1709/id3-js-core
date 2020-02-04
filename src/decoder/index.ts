@@ -78,22 +78,22 @@ export default class Decoder {
 
 					case "ETC":
 					case "ETCO":
-						frames.push(new EventTimingCodesFrame(framesData, tagHeader.version));
+						frames.push(new EventTimingCodesFrame(frameData, tagHeader.version));
 						break;
 
 					case "MLL":
 					case "MLLT":
-						frames.push(new MPEGLocationLookupTableFrame(framesData, tagHeader.version));
+						frames.push(new MPEGLocationLookupTableFrame(frameData, tagHeader.version));
 						break;
 
 					case "STC":
 					case "SYTC":
-						frames.push(new SynchronisedTempoCodesFrame(framesData, tagHeader.version));
+						frames.push(new SynchronisedTempoCodesFrame(frameData, tagHeader.version));
 						break;
 
 					case "ULT":
 					case "USLT":
-						frames.push(new UnsynchronisedLyricsFrame(framesData, tagHeader.version));
+						frames.push(new UnsynchronisedLyricsFrame(frameData, tagHeader.version));
 						break;
 
 					default:
