@@ -86,14 +86,19 @@ export default class InvolvedPeopleListFrame extends Frame {
 	public encodeContent(encodingOptions: IEncodingOptions){
 		const terminator = Utils.getTerminator(encodingOptions.textEncoding);
 
-		return Buffer.concat(this.value.map(involedPerson =>
-			Buffer.concat([
-				Buffer.from(involedPerson.role),
-				terminator,
-				Buffer.from(involedPerson.name),
-				terminator
-			])
-		));
+		return Buffer.concat([
+			Buffer.from(new Uint8Array([
+				Utils.getEncodingByte(encodingOptions.textEncoding)
+			])),
+			...this.value.map(involedPerson =>
+				Buffer.concat([
+					Buffer.from(involedPerson.role),
+					terminator,
+					Buffer.from(involedPerson.name),
+					terminator
+				]))
+			]
+		);
 	}
 
 	/**
