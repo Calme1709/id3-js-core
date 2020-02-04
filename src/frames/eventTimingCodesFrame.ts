@@ -98,7 +98,7 @@ export default class EventTimingCodesFrame extends Frame {
 	/**
 	 * The type of frame
 	 */
-	public frameType = "TEXTINFORMATIONFRAME";
+	public frameType = "EVENTTIMINGCODESFRAME";
 
 	/**
 	 * The frame identifier
@@ -133,7 +133,7 @@ export default class EventTimingCodesFrame extends Frame {
 
 			const events: IEvent[] = [];
 
-			for(let i = headerInfo.headerSize + 2; i < dataOrValue.length; i += 5){
+			for(let i = headerInfo.headerSize + 1; i < dataOrValue.length; i += 5){
 				events.push({
 					event: dataOrValue[i],
 					timeStamp: dataOrValue.readInt32BE(i + 1)
