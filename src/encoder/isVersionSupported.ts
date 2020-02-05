@@ -36,9 +36,11 @@ export default (version: 2 | 3 | 4, frames: Frame[], encodingOptions: IUserDefin
 		}
 	}
 
+	const v4TextEncodings = [ "UTF-8", "UTF-16BE" ];
+
 	switch(version){
 		case 2:
-			if(encodingOptions.textEncoding?.substr(0, 5) === "utf16"){
+			if(v4TextEncodings.includes(encodingOptions.textEncoding || "")){
 				reasonsForVersionNotSupported.push(`ID3v2.2 does not support text encoding of type ${encodingOptions.textEncoding}`);
 			}
 
@@ -61,7 +63,7 @@ export default (version: 2 | 3 | 4, frames: Frame[], encodingOptions: IUserDefin
 			break;
 
 		case 3:
-			if(encodingOptions.textEncoding?.substr(0, 5) === "utf16"){
+			if(v4TextEncodings.includes(encodingOptions.textEncoding || "")){
 				reasonsForVersionNotSupported.push(`ID3v2.3 does not support text encoding of type ${encodingOptions.textEncoding}`);
 			}
 
