@@ -1,5 +1,6 @@
 import { Buffer } from "buffer";
 import Utils from '../utils';
+import SynchsafeInteger from '../utils/synchsafeIntegers';
 
 /**
  * Data that is stored in (and about) the header of a singular frame
@@ -95,6 +96,8 @@ export default (data: Buffer, ID3Version: 2 | 3 | 4): IFrameHeader => {
 	const identifierLength = Utils.getIdentifierLength(ID3Version);
 
 	const identifier = data.slice(0, identifierLength).toString("latin1");
+	const frameSize = SynchsafeInteger.decode(data.readIntBE(identifierLength, identifierLength))
+
 	const frameSize = Utils.decodeSynchsafeInteger(data.readIntBE(identifierLength, identifierLength));
 
 	let headerSize = ID3Version === 2 ? 6 : 10;

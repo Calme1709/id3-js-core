@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { TimestampUnit } from '../utils';
 import { IVersionSupport } from '../encoder/isVersionSupported';
+import TimestampUnit, { TimestampUnits } from '../utils/timestampUnit';
 
 /**
  * A singular event that is stored within the event timing codes
@@ -129,7 +129,7 @@ export default class EventTimingCodesFrame extends Frame {
 		if(dataOrValue instanceof Buffer){
 			const headerInfo = this.decodeHeader(dataOrValue, ID3Version as 2 | 3 | 4);
 
-			const timestampUnit = dataOrValue[headerInfo.headerSize] === 1 ? TimestampUnit.MPEGFrames : TimestampUnit.Milliseconds;
+			const timestampUnit = dataOrValue[headerInfo.headerSize] === 1 ? TimestampUnits.MPEGFrames : TimestampUnits.Milliseconds;
 
 			const events: IEvent[] = [];
 
@@ -157,7 +157,7 @@ export default class EventTimingCodesFrame extends Frame {
 	 */
 	public encodeContent(){
 		return Buffer.concat([
-			Buffer.from(new Uint8Array([ this.value.timestampUnit ])),
+			Buffer.from(new Uint8Array([ this.value.timestampUnit.byteRepresentation ])),
 			Buffer.concat(this.value.events.map(event => {
 				const timestampBuffer = Buffer.alloc(4, 0);
 

@@ -4,6 +4,7 @@ import Utils from '../../utils';
 import FrameFlagManager from './frameFlagManager';
 import decodeFrameHeader, { IV3FrameFlags, IV4FrameFlags } from "../../decoder/decodeFrameHeader";
 import { IVersionSupport } from '../../encoder/isVersionSupported';
+import SynchsafeInteger from '../../utils/synchsafeIntegers';
 
 /**
  * The base class that all frames derive from
@@ -83,7 +84,7 @@ export default abstract class Frame {
 			const headerBuffer = Buffer.alloc(6, 0);
 
 			headerBuffer.write(Utils.getCorrectIdentifier(this.identifier, 2), 0, 3, "latin1");
-			headerBuffer.writeUIntBE(Utils.encodeSynchsafeInteger(contentBuffer.length), 3, 3);
+			headerBuffer.writeUIntBE(SynchsafeInteger.encode(contentBuffer.length), 3, 3);
 
 			return Buffer.concat([
 				headerBuffer,
@@ -92,7 +93,7 @@ export default abstract class Frame {
 		} else {
 			const headerBuffer = Buffer.alloc(8, 0);
 			headerBuffer.write(Utils.getCorrectIdentifier(this.identifier, 3));
-			headerBuffer.writeUInt32BE(Utils.encodeSynchsafeInteger(contentBuffer.length), 4);
+			headerBuffer.writeUInt32BE(SynchsafeInteger.encode(contentBuffer.length), 4);
 
 			if(this.flagManager.flags === undefined){
 				this.flagManager.setDefaultFlags(identifier, encodingOptions.ID3Version);

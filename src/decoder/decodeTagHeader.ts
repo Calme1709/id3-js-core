@@ -1,5 +1,6 @@
 import { Buffer } from "buffer";
 import Utils from "../utils";
+import SynchsafeInteger from '../utils/synchsafeIntegers';
 
 /**
  * The data that is stored in the header of a tag regardless of which version of the spec it is following
@@ -165,7 +166,8 @@ export interface IV4Header extends IHeader {
  */
 export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 	const version = data[3];
-	const tagSize = Utils.decodeSynchsafeInteger(version === 2 ? data.readIntBE(6, 3) : data.readInt32BE(6));
+
+	const tagSize = SynchsafeInteger.decode(data.readIntBE(6, version === 2 ? 3 : 4));
 
 	const flags = data[5].toString(2).split("").map(bit => bit === "1");
 
@@ -184,9 +186,9 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 			let paddingSize: number | undefined;
 
 			if(flags[1]){
-				headerSize += Utils.decodeSynchsafeInteger(data.readInt32BE(10)) + 4;
+				headerSize += SynchsafeInteger.decode(data.readInt32BE(10)) + 4;
 
-				paddingSize = Utils.decodeSynchsafeInteger(data.readInt32BE(14));
+				paddingSize = SynchsafeInteger.decode(data.readInt32BE(14));
 
 				if(data.readInt16BE(14).toString(2).split("").map(bit => bit === "1")[0]){
 					crcData = data.readInt32BE(20);

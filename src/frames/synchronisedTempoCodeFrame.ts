@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { TimestampUnit } from '../utils';
 import { IVersionSupport } from '../encoder/isVersionSupported';
+import TimestampUnit from '../utils/timestampUnit';
 
 /**
  * A singular tempo code
@@ -73,7 +73,7 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 
 			const tempoCodes: ITempoCode[] = [];
 
-			const timestampUnit = dataOrValue[headerInfo.headerSize];
+			const timestampUnit = new TimestampUnit(dataOrValue[headerInfo.headerSize]);
 
 			for(let i = headerInfo.headerSize + 1; i < dataOrValue.length; i += 5){
 				let tempo = dataOrValue[i];
@@ -108,7 +108,7 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 	 */
 	public encodeContent(){
 		return Buffer.concat([
-			Buffer.from(new Uint8Array([ this.value.timestampUnit ])),
+			Buffer.from(new Uint8Array([ this.value.timestampUnit.byteRepresentation ])),
 			Buffer.concat(this.value.tempoCodes.map(tempoCode => {
 				const tempoDescriptor = Buffer.from(new Uint8Array(
 					tempoCode.tempo > 0xFF ?
