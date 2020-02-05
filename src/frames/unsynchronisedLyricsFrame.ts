@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
-import Utils from '../utils';
 import Frame from './frameComponents/frame';
 import { IEncodingOptions } from '../encoder/encodingOptions';
 import { IVersionSupport } from '../encoder/isVersionSupported';
+import TextEncodingType from '../utils/textEncodingType';
 
 /**
  * The information that is stored in a unsynchronised lyrics frame
@@ -50,17 +50,16 @@ export default class UnsynchronisedLyricsFrame extends Frame {
 		if(dataOrValue instanceof Buffer){
 			const headerInfo = this.decodeHeader(dataOrValue, ID3Version as 3 | 4);
 
-			const encodingType = Utils.getEncoding(dataOrValue[headerInfo.headerSize]);
+			const encoding = new TextEncodingType(dataOrValue[headerInfo.headerSize]);
+
 			const language = dataOrValue.slice(headerInfo.headerSize + 1, headerInfo.headerSize + 4).toString("latin1");
 
-			const delimiter = Utils.getTerminator(encodingType);
-
-			const splitPoint = dataOrValue.indexOf(delimiter, headerInfo.headerSize + 4);
+			const splitPoint = dataOrValue.indexOf(encoding.terminator, headerInfo.headerSize + 4);
 
 			this.value = {
 				language,
-				description: dataOrValue.slice(headerInfo.headerSize + 4, splitPoint).toString(encodingType),
-				value: dataOrValue.slice(splitPoint + delimiter.length).toString(encodingType)
+				description: encoding.decodeText(dataOrValue.slice(headerInfo.headerSize + 4, splitPoint)),
+				value: encoding.decodeText(dataOrValue.slice(splitPoint + encoding.terminator.length))
 			};
 		} else {
 			this.identifier = "USLT";
@@ -76,11 +75,11 @@ export default class UnsynchronisedLyricsFrame extends Frame {
 	 */
 	public encodeContent(encodingOptions: IEncodingOptions){
 		return Buffer.concat([
-			Buffer.from(new Uint8Array([ Utils.getEncodingByte(encodingOptions.textEncoding) ])),
+			Buffer.from(new Uint8Array([ encodingOptions.textEncoding.byteRepresentation ])),
 			Buffer.from(this.value.language.substr(0, 3), "latin1"),
-			Buffer.from(this.value.description, encodingOptions.textEncoding),
-			Utils.getTerminator(encodingOptions.textEncoding),
-			Buffer.from(this.value.value, encodingOptions.textEncoding)
+			encodingOptions.textEncoding.encodeText(this.value.description),
+			encodingOptions.textEncoding.terminator,
+			encodingOptions.textEncoding.encodeText(this.value.value)
 		]);
 	}
 

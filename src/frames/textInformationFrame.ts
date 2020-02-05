@@ -3,6 +3,7 @@ import Utils from '../utils';
 import Frame from './frameComponents/frame';
 import { IVersionSupport } from '../encoder/isVersionSupported';
 import { IEncodingOptions } from '../encoder/encodingOptions';
+import TextEncodingType from '../utils/textEncodingType';
 
 /**
  * A basic text information frame
@@ -42,9 +43,9 @@ export default class TextInformationFrame extends Frame {
 		if(dataOrIdentifier instanceof Buffer){
 			const headerInfo = this.decodeHeader(dataOrIdentifier, valueOrID3Version as 3 | 4);
 
-			const encoding = Utils.getEncoding(dataOrIdentifier[headerInfo.headerSize]);
+			const encoding = new TextEncodingType(dataOrIdentifier[headerInfo.headerSize]);
 
-			this.value = dataOrIdentifier.slice((headerInfo.headerSize) + 1).toString(encoding);
+			this.value = encoding.decodeText(dataOrIdentifier.slice((headerInfo.headerSize) + 1));
 		} else {
 			this.identifier = dataOrIdentifier;
 			this.value = valueOrID3Version as string;
@@ -59,9 +60,9 @@ export default class TextInformationFrame extends Frame {
 	public encodeContent(encodingOptions: IEncodingOptions){
 		return Buffer.concat([
 			Buffer.from(new Uint8Array([
-				Utils.getEncodingByte(encodingOptions.textEncoding)
+				encodingOptions.textEncoding.byteRepresentation
 			])),
-			Buffer.from(this.value, encodingOptions.textEncoding)
+			encodingOptions.textEncoding.encodeText(this.value)
 		]);
 	}
 

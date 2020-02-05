@@ -1,6 +1,5 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encoder/encodingOptions';
 import { IVersionSupport } from '../encoder/isVersionSupported';
 
 /**
@@ -66,8 +65,8 @@ export default class URLLinkFrame extends Frame {
 	 * @param encodingOptions - The encoding options to encode with
 	 * @returns The encoded content
 	 */
-	public encodeContent(encodingOptions: IEncodingOptions){
-		return Buffer.from(this.value, encodingOptions.textEncoding);
+	public encodeContent(){
+		return Buffer.from(this.value, "latin1");
 	}
 
 	/**

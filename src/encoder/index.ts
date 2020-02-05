@@ -1,8 +1,9 @@
 import { Frame } from '../frames';
-import { IUserDefinedEncodingOptions, IEncodingOptions } from './encodingOptions';
+import { IUserDefinedEncodingOptions, IEncodingOptions, IDefaultEncodingOptions } from './encodingOptions';
 import { Buffer } from 'buffer';
 import isVersionSupported from './isVersionSupported';
 import { defaultEncodingOptions } from "../data.json";
+import TextEncodingType from '../utils/textEncodingType';
 
 export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) => {
 	if(encodingOptions.ID3Version && !isVersionSupported(encodingOptions.ID3Version, frames, encodingOptions)){
@@ -34,10 +35,19 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 		);
 	}
 
+	const defaultOptions = (defaultEncodingOptions as {[key: string]: IDefaultEncodingOptions})[encodingVersion.toString()];
+
+	const textEncoding = new TextEncodingType(
+		encodingOptions.textEncoding !== undefined ?
+			encodingOptions.textEncoding :
+			defaultOptions.textEncoding
+	);
+
 	const computedEncodingOptions: IEncodingOptions = {
-		ID3Version: encodingVersion,
+		...defaultOptions,
 		...encodingOptions,
-		...(defaultEncodingOptions as {[key: string]: IEncodingOptions})[encodingVersion.toString()]
+		ID3Version: encodingVersion as 2 | 3 | 4,
+		textEncoding
 	};
 
 	const encodedFrames: Buffer[] = [];

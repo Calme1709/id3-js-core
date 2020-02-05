@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
-import Utils from '../utils';
 import Frame from './frameComponents/frame';
 import { IEncodingOptions } from '../encoder/encodingOptions';
 import { IVersionSupport } from '../encoder/isVersionSupported';
+import TextEncodingType from '../utils/textEncodingType';
 
 /**
  * The information that is stored in a user defined text information frame
@@ -50,15 +50,13 @@ export default class UserDefinedURLLinkFrame extends Frame {
 		if(dataOrDescription instanceof Buffer){
 			const headerInfo = this.decodeHeader(dataOrDescription, ID3VersionOrValue as 3 | 4);
 
-			const encodingType = Utils.getEncoding(dataOrDescription[headerInfo.headerSize]);
+			const encoding = new TextEncodingType(dataOrDescription[headerInfo.headerSize]);
 
-			const delimiter = Utils.getTerminator(encodingType);
-
-			const splitPoint = dataOrDescription.indexOf(delimiter, headerInfo.headerSize + 1);
+			const splitPoint = dataOrDescription.indexOf(encoding.terminator, headerInfo.headerSize + 1);
 
 			this.value = {
-				description: dataOrDescription.slice(headerInfo.headerSize + 1, splitPoint).toString(encodingType),
-				value: dataOrDescription.slice(splitPoint + delimiter.length).toString()
+				description: encoding.decodeText(dataOrDescription.slice(headerInfo.headerSize + 1, splitPoint)),
+				value: dataOrDescription.slice(splitPoint + encoding.terminator.length).toString()
 			};
 		} else {
 			this.identifier = "WXXX";
@@ -77,9 +75,9 @@ export default class UserDefinedURLLinkFrame extends Frame {
 	 */
 	public encodeContent(encodingOptions: IEncodingOptions){
 		return Buffer.concat([
-			Buffer.from(new Uint8Array([ Utils.getEncodingByte(encodingOptions.textEncoding) ])),
-			Buffer.from(this.value.description, encodingOptions.textEncoding),
-			Utils.getTerminator(encodingOptions.textEncoding),
+			Buffer.from(new Uint8Array([ encodingOptions.textEncoding.byteRepresentation ])),
+			encodingOptions.textEncoding.encodeText(this.value.description),
+			encodingOptions.textEncoding.terminator,
 			Buffer.from(this.value.value, "latin1")
 		]);
 	}

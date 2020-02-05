@@ -1,22 +1,30 @@
 import { ITagRestrictions } from '../decoder/decodeTagHeader';
+import TextEncodingType, { TextEncodingName } from '../utils/textEncodingType';
 
 /**
- * All the supported text encoding methods
+ * Modify an interface
  */
-export type TextEncoding = "utf8" | "utf16le" | "utf16be" | "latin1";
+type Modify<T, R> = Omit<T, keyof R> & R;
 
 /**
  * Options for encoding the tag
  */
-export interface IEncodingOptions{
+export interface IEncodingOptions {
 	ID3Version: 2 | 3 | 4;
-	textEncoding: TextEncoding;
+	textEncoding: TextEncodingType;
 	unsynchronisation: boolean;
 	experimental: boolean;
 	tagIsAnUpdate: boolean;
 	crcData?: number;
 	tagRestrictions?: ITagRestrictions;
 }
+
+/**
+ * The type of the default options that are stored as default
+ */
+export type IDefaultEncodingOptions = Modify<IEncodingOptions, {
+	textEncoding: TextEncodingName;
+}>;
 
 /**
  * Options regarding the encoding of the ID3v2 tag
@@ -36,7 +44,7 @@ export interface IUserDefinedEncodingOptions {
 	 *
 	 * Note that UTF-16 and UTF-16BE are only supported in ID3v2.3+
 	 */
-	textEncoding?: TextEncoding;
+	textEncoding?: TextEncodingName;
 
 	unsynchronisation?: boolean;
 	experimental?: boolean;

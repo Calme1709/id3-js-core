@@ -26,7 +26,8 @@
 		"typescript": "^3.7.5"
 	},
 	"dependencies": {
-		"buffer": "^5.4.3"
+		"buffer": "^5.4.3",
+		"iconv-lite": "^0.5.1"
 	},
 	"files": [
 		"dist/"

@@ -1,5 +1,3 @@
-import { Buffer } from "buffer";
-import { TextEncoding } from './encoder/encodingOptions';
 import { remappedFrames } from "./data.json";
 
 /**
@@ -31,73 +29,6 @@ export default class Utils {
 	}
 
 	/**
-	 * Get the length of the null byte depending on the type of encoding
-	 * @param encodingType - The type of encoding
-	 * @returns The length of the null byte
-	 */
-	public static getNullByteLength(encodingType: TextEncoding): 1 | 2;
-
-	/**
-	 * Get the length of the null byte depending on the number representation of the encoding type
-	 * @param encodingByte - The byte specifying the type of encoding
-	 * @returns The length of the null byte
-	 */
-	public static getNullByteLength(encodingByte: number) : 1 | 2;
-	public static getNullByteLength(encoding: number | TextEncoding){
-		const encodingType = typeof encoding === "string" ? encoding : this.getEncoding(encoding);
-
-		switch(encodingType){
-			case "utf16le":
-			case "utf16be":
-				return 2;
-			case "latin1":
-			case "utf8":
-			default:
-				return 1;
-		}
-	}
-
-	/**
-	 * Get the name of the encoding type depending on the encoding byte
-	 * @param encodingByte - The byte that specifies the type of encoding
-	 * @returns The name of the encoding type
-	 */
-	public static getEncoding(encodingByte: number): TextEncoding{
-		switch(encodingByte){
-			case 0x00:
-				return "latin1";
-			case 0x01:
-				return "utf16le";
-			case 0x02:
-				return "utf16be";
-			case 0x03:
-				return "utf8";
-			default:
-				throw new Error(`Unrecognised text encoding byte: ${encodingByte}`);
-		}
-	}
-
-	/**
-	 * Get the byte representation of an encoding type
-	 * @param encodingType - The encoding type to get the byte representation of
-	 * @returns The byte representation
-	 */
-	public static getEncodingByte(encodingType: TextEncoding){
-		switch(encodingType){
-			case "latin1":
-				return 0x00;
-			case "utf16le":
-				return 0x01;
-			case "utf16be":
-				return 0x02;
-			case "utf8":
-				return 0x03;
-			default:
-				throw new Error(`Unrecognised encoding type: ${encodingType}`);
-		}
-	}
-
-	/**
 	 * Decode a timestamp unit from it's number notation (0x00 or 0x01) to it's language representation (Milliseconds
 	 * or MPEG Frames respectively)
 	 * @param unitByte - The number notation of the timestamp unit
@@ -105,27 +36,6 @@ export default class Utils {
 	 */
 	public static decodeTimestampUnit(unitByte: number){
 		return unitByte === 0x01 ? "MPEG Frames" : "Milliseconds";
-	}
-
-	/**
-	 * Get the terminator byte(s) for the specified type of encoding
-	 * @param encodingType - The type of encoding
-	 * @returns The terminator byte(s)
-	 */
-	public static getTerminator(encodingType: TextEncoding): Buffer;
-
-	/**
-	 *  Get the terminator byte(s) for the specified type of encoding from the byte representation of the encoding type
-	 * @param encodingByte - The byte specifying the type of encoding
-	 * @returns The terminator byte(s)
-	 */
-	public static getTerminator(encodingByte: number): Buffer;
-	public static getTerminator(encoding: TextEncoding | number){
-		const encodingType = typeof encoding === "string" ? encoding : this.getEncoding(encoding);
-
-		return this.getNullByteLength(encodingType) === 2 ?
-			Buffer.from(new Uint8Array([ 0x00, 0x00 ])) :
-			Buffer.from(new Uint8Array([ 0x00 ]));
 	}
 
 	/**
