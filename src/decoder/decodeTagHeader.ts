@@ -218,14 +218,18 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 
 				tagIsAnUpdate = extendedFlags[0];
 
-				if(extendedFlags[1]){
-					crcData = SynchsafeInteger.decode(data.readIntBE(flagDataOffset, 5));
+				if(tagIsAnUpdate){
+					flagDataOffset += 1;
+				}
 
-					flagDataOffset += 5;
+				if(extendedFlags[1]){
+					crcData = SynchsafeInteger.decode(data.readIntBE(flagDataOffset + 1, 5));
+
+					flagDataOffset += 6;
 				}
 
 				if(extendedFlags[2]){
-					const restrictionsByte = data[flagDataOffset].toString(2);
+					const restrictionsByte = data[flagDataOffset + 1].toString(2);
 
 					tagRestrictions = {
 						tagSize: parseInt(restrictionsByte.substr(0, 2), 2) as 0 | 1 | 2 | 3,
