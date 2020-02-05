@@ -1,5 +1,4 @@
 import { Buffer } from "buffer";
-import iconv from "iconv-lite";
 
 /**
  * The pretty names of the different types of encodings
@@ -78,7 +77,7 @@ export default class TextEncodingType {
 	 */
 	public encodeText(text: string){
 		if(this.internalName === "utf16be"){
-			return iconv.encode(text, this.internalName) as Buffer;
+			return this.toggleUTF16Endian(Buffer.from(text, "utf16le"));
 		}
 
 		return Buffer.from(text, this.internalName);
@@ -91,7 +90,7 @@ export default class TextEncodingType {
 	 */
 	public decodeText(data: Buffer){
 		if(this.internalName === "utf16be"){
-			return iconv.decode(data, this.internalName);
+			return this.toggleUTF16Endian(data).toString("utf16le");
 		}
 
 		return data.toString(this.internalName);
@@ -143,5 +142,21 @@ export default class TextEncodingType {
 			default:
 				throw new Error(`Invalid text encoding type: ${encodingName}`);
 		}
+	}
+
+	/**
+	 * Toggle a buffer between UTF-16LE and UTF16-BE
+	 * @param data - The buffer to toggle
+	 * @returns The toggled buffer
+	 */
+	private toggleUTF16Endian(data: Buffer): Buffer{
+		const newBuffer = Buffer.alloc(data.length, 0);
+
+		for(let i = 0; i < data.length; i += 2){
+			newBuffer[i] = data[i + 1];
+			newBuffer[i + 1] = data[i];
+		}
+
+		return newBuffer;
 	}
 }
