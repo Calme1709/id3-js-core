@@ -9,7 +9,7 @@ export type TextEncodingName = "ISO-8859-1" | "UTF-16" | "UTF-16BE" | "UTF-8";
 /**
  * The internal names of the different types of encodings
  */
-export type TextEncodingInteralNames = "latin1" | "utf16le" | "utf16be" | "utf8";
+type TextEncodingInteralNames = "latin1" | "utf16le" | "utf16be" | "utf8";
 
 /**
  * A type of text encoding

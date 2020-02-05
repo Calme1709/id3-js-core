@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { IVersionSupport } from '../encoder/isVersionSupported';
-import TimestampUnit from '../utils/timestampUnit';
+import { IVersionSupport } from '@encoder/isVersionSupported';
+import { TimestampUnit } from '@utils';
 
 /**
  * A singular tempo code

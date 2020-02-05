@@ -1,6 +1,5 @@
 import { Buffer } from "buffer";
-import Utils from '../utils';
-import SynchsafeInteger from '../utils/synchsafeIntegers';
+import { SynchsafeInteger, getIdentifierLength } from '@utils';
 
 /**
  * Data that is stored in (and about) the header of a singular frame
@@ -93,12 +92,10 @@ export interface IV4FrameFlags extends IV3FrameFlags {
  * @returns An object containing some information that was stored in, and about the header
  */
 export default (data: Buffer, ID3Version: 2 | 3 | 4): IFrameHeader => {
-	const identifierLength = Utils.getIdentifierLength(ID3Version);
+	const identifierLength = getIdentifierLength(ID3Version);
 
 	const identifier = data.slice(0, identifierLength).toString("latin1");
-	const frameSize = SynchsafeInteger.decode(data.readIntBE(identifierLength, identifierLength))
-
-	const frameSize = Utils.decodeSynchsafeInteger(data.readIntBE(identifierLength, identifierLength));
+	const frameSize = SynchsafeInteger.decode(data.readIntBE(identifierLength, identifierLength));
 
 	let headerSize = ID3Version === 2 ? 6 : 10;
 	let decodedFlags: IV3FrameFlags | IV4FrameFlags | undefined;

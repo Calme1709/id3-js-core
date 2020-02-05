@@ -1,9 +1,9 @@
-import Utils from '../../utils';
-import { IEncodingOptions } from '../../encoder/encodingOptions';
 import { Buffer } from 'buffer';
-import { IV3FrameFlags, IV4FrameFlags } from '../../decoder/decodeFrameHeader';
-import { framesToBeDiscardedOnFileAlter } from "../../data.json";
-import { IVersionSupport } from '../../encoder/isVersionSupported';
+import { IVersionSupport } from '@encoder/isVersionSupported';
+import { IEncodingOptions } from '@encoder/encodingOptions';
+import { IV3FrameFlags, IV4FrameFlags } from '@decoder/decodeFrameHeader';
+import { framesToBeDiscardedOnFileAlter } from "@data";
+import { getCorrectIdentifier } from '@utils';
 
 /**
  * A class for managing the frame flags
@@ -70,7 +70,7 @@ export default class FrameFlagManager {
 	 */
 	public setDefaultFlags(identifier: string, ID3Version: 3 | 4){
 		const defaultFlags: IV3FrameFlags = {
-			discardOnFileAlteration: framesToBeDiscardedOnFileAlter.includes(Utils.getCorrectIdentifier(identifier, 3)),
+			discardOnFileAlteration: framesToBeDiscardedOnFileAlter.includes(getCorrectIdentifier(identifier, 3)),
 			discardOnTagAlteration: false,
 			readOnly: false,
 			compression: false,

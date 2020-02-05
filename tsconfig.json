@@ -25,7 +25,31 @@
 		"watch": false,
 		"experimentalDecorators": true,
 		"declaration": true,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"baseUrl": "./src/",
+		"paths": {
+			"@utils": [
+				"utils/index.ts"
+			],
+			"@data": [
+				"data.json"
+			],
+			"@encoder": [
+				"encoder/index.ts"
+			],
+			"@encoder/*": [
+				"encoder/*"
+			],
+			"@decoder": [
+				"decoder/index.ts"
+			],
+			"@decoder/*": [
+				"decoder/*"
+			],
+			"@frames": [
+				"frames/index.ts"
+			]
+		}
 	},
 	"files": [
 		"src/index.ts"

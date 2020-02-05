@@ -1,5 +1,5 @@
 import { ITagRestrictions } from '../decoder/decodeTagHeader';
-import TextEncodingType, { TextEncodingName } from '../utils/textEncodingType';
+import { TextEncodingType, TextEncodingName } from '@utils';
 
 /**
  * Modify an interface

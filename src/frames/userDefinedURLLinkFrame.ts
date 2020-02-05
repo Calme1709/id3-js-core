@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encoder/encodingOptions';
-import { IVersionSupport } from '../encoder/isVersionSupported';
-import TextEncodingType from '../utils/textEncodingType';
+import { IEncodingOptions } from '@encoder/encodingOptions';
+import { IVersionSupport } from '@encoder/isVersionSupported';
+import { TextEncodingType } from '@utils';
 
 /**
  * The information that is stored in a user defined text information frame

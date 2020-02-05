@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import Frame from './frameComponents/frame';
-import { IVersionSupport } from '../encoder/isVersionSupported';
+import { IVersionSupport } from '@encoder/isVersionSupported';
 
 /**
  * A music cd identifier frame

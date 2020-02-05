@@ -1,6 +1,5 @@
 import { Buffer } from "buffer";
-import Utils from "../utils";
-import SynchsafeInteger from '../utils/synchsafeIntegers';
+import { SynchsafeInteger } from '@utils';
 
 /**
  * The data that is stored in the header of a tag regardless of which version of the spec it is following
@@ -80,7 +79,7 @@ export interface ITagRestrictions {
 	tagSize: 0 | 1 | 2 | 3;
 
 	/**
-	 * Restrictions on the type's of text encoding in this tag;
+	 * Restrictions on the types of text encoding in this tag;
 	 *
 	 * 0 - No restrictions
 	 *
@@ -213,14 +212,14 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 			if(flags[1]){
 				let flagDataOffset = 16;
 
-				headerSize += Utils.decodeSynchsafeInteger(data.readInt32BE(10)) + 4;
+				headerSize += SynchsafeInteger.decode(data.readInt32BE(10)) + 4;
 
 				const extendedFlags = data[15].toString(2).split("").map(bit => bit === "1");
 
 				tagIsAnUpdate = extendedFlags[0];
 
 				if(extendedFlags[1]){
-					crcData = Utils.decodeSynchsafeInteger(data.readIntBE(flagDataOffset, 5));
+					crcData = SynchsafeInteger.decode(data.readIntBE(flagDataOffset, 5));
 
 					flagDataOffset += 5;
 				}

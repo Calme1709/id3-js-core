@@ -1,9 +1,10 @@
 import { Buffer } from 'buffer';
-import Utils from '../utils';
+
+import { TextEncodingType, getCorrectIdentifier } from "@utils";
+
 import Frame from './frameComponents/frame';
-import { IVersionSupport } from '../encoder/isVersionSupported';
-import { IEncodingOptions } from '../encoder/encodingOptions';
-import TextEncodingType from '../utils/textEncodingType';
+import { IVersionSupport } from '@encoder/isVersionSupported';
+import { IEncodingOptions } from '@encoder/encodingOptions';
 
 /**
  * A basic text information frame
@@ -117,7 +118,7 @@ export default class TextInformationFrame extends Frame {
 		}
 
 		if(version === 4){
-			if(removedInV4.includes(Utils.getCorrectIdentifier(this.identifier, 3))){
+			if(removedInV4.includes(getCorrectIdentifier(this.identifier, 3))){
 				return {
 					supportsVersion: false,
 					reason: "This frame was removed in ID3v2.4"

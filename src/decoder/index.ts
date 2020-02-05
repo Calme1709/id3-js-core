@@ -15,7 +15,7 @@ import {
 	MPEGLocationLookupTableFrame,
 	SynchronisedTempoCodesFrame,
 	UnsynchronisedLyricsFrame
-} from "../frames";
+} from "@frames";
 
 /**
  * The decoder class

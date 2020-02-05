@@ -1,9 +1,9 @@
-import { Frame } from '../frames';
+import { Frame } from '@frames';
 import { IUserDefinedEncodingOptions, IEncodingOptions, IDefaultEncodingOptions } from './encodingOptions';
 import { Buffer } from 'buffer';
 import isVersionSupported from './isVersionSupported';
-import { defaultEncodingOptions } from "../data.json";
-import TextEncodingType from '../utils/textEncodingType';
+import { defaultEncodingOptions } from "@data";
+import { TextEncodingType } from '@utils';
 
 export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) => {
 	if(encodingOptions.ID3Version && !isVersionSupported(encodingOptions.ID3Version, frames, encodingOptions)){

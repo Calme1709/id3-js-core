@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
-import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '../encoder/encodingOptions';
-import { IVersionSupport } from '../encoder/isVersionSupported';
-import TextEncodingType from '../utils/textEncodingType';
+import { Frame } from '.';
+import { IEncodingOptions } from "@encoder/encodingOptions";
+import { IVersionSupport } from '@encoder/isVersionSupported';
+import { TextEncodingType } from '@utils';
 
 /**
  * The value that is stored in an involved people list frame
