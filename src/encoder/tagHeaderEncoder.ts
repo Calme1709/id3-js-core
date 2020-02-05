@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import { IEncodingOptions } from './encodingOptions';
-import { SynchsafeInteger } from "@utils";
+import { SynchsafeInteger, FlagByte } from "@utils";
 
 /**
  * A class which handles all of the logic for encoding a tag header
@@ -124,41 +124,33 @@ export default class TagHeaderEncoder {
 	 * @returns - The flag byte
 	 */
 	private static generateFlagByte(encodingOptions: IEncodingOptions){
-		let binaryStringRepresentation: string;
-
 		switch(encodingOptions.ID3Version){
 			case 2:
-				binaryStringRepresentation = `
-					${encodingOptions.unsynchronisation ? 1 : 0}
-					${"0".repeat(7)}
-				`;
+				return FlagByte.encode([
+					encodingOptions.unsynchronisation
+				]);
 
 				break;
 
 			case 3:
-				binaryStringRepresentation = `
-					${encodingOptions.unsynchronisation ? 1 : 0}
-					${this.requiresExtendedHeader(encodingOptions) ? 1 : 0}
-					${encodingOptions.experimental ? 1 : 0}
-					${"0".repeat(5)}
-				`;
+				return FlagByte.encode([
+					encodingOptions.unsynchronisation,
+					this.requiresExtendedHeader(encodingOptions),
+					encodingOptions.experimental
+				]);
 
 				break;
 
 			case 4:
-				binaryStringRepresentation = `
-					${encodingOptions.unsynchronisation ? 1 : 0}
-					${this.requiresExtendedHeader(encodingOptions) ? 1 : 0}
-					${encodingOptions.experimental ? 1 : 0}
-					${"0".repeat(5)}
-				`;
-				break;
+				return FlagByte.encode([
+					encodingOptions.unsynchronisation,
+					this.requiresExtendedHeader(encodingOptions),
+					encodingOptions.experimental
+				]);
 
 			default:
 				throw new Error(`Invalid ID3v2 version: ${encodingOptions.ID3Version}`);
 		}
-
-		return parseInt(binaryStringRepresentation.replace(/\n/g, "").replace(/\t/g, ""), 2);
 	}
 
 	/**

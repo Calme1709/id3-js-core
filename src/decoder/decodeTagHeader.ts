@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { SynchsafeInteger } from '@utils';
+import { SynchsafeInteger, FlagByte } from '@utils';
 
 /**
  * The data that is stored in the header of a tag regardless of which version of the spec it is following
@@ -168,7 +168,7 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 
 	const tagSize = SynchsafeInteger.decode(data.readIntBE(6, version === 2 ? 3 : 4));
 
-	const flags = data[5].toString(2).split("").map(bit => bit === "1");
+	const flags = FlagByte.decode(data[5]);
 
 	switch(version){
 		case 2: {
@@ -189,7 +189,7 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 
 				paddingSize = SynchsafeInteger.decode(data.readInt32BE(14));
 
-				if(data.readInt16BE(14).toString(2).split("").map(bit => bit === "1")[0]){
+				if(FlagByte.decode(data[14])[0]){
 					crcData = data.readInt32BE(20);
 				}
 			}
@@ -214,7 +214,7 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 
 				headerSize += SynchsafeInteger.decode(data.readInt32BE(10)) + 4;
 
-				const extendedFlags = data[15].toString(2).split("").map(bit => bit === "1");
+				const extendedFlags = FlagByte.decode(data[15]);
 
 				tagIsAnUpdate = extendedFlags[0];
 

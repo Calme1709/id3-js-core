@@ -3,7 +3,7 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
 import { IEncodingOptions } from '@encoder/encodingOptions';
 import { IV3FrameFlags, IV4FrameFlags } from '@decoder/decodeFrameHeader';
 import { framesToBeDiscardedOnFileAlter } from "@data";
-import { getCorrectIdentifier } from '@utils';
+import { getCorrectIdentifier, FlagByte } from '@utils';
 
 /**
  * A class for managing the frame flags
@@ -19,7 +19,7 @@ export default class FrameFlagManager {
 	public supportsVersion(version: number): IVersionSupport{
 		switch(version){
 			case 2:
-				if(this.getBinaryRepresentation(4) !== "0".repeat(16)){
+				if(this.getByteRepresentation(4) !== 0x00){
 					return {
 						supportsVersion: false,
 						reason: "There are flags set, this is not supported in ID3v2.2"
@@ -104,46 +104,54 @@ export default class FrameFlagManager {
 	public encode(encodingOptions: IEncodingOptions){
 		const retBuf = Buffer.alloc(2, 0);
 
-		retBuf.writeInt16BE(parseInt(this.getBinaryRepresentation(encodingOptions.ID3Version as 3 | 4), 2), 0);
+		retBuf.writeInt16BE(this.getByteRepresentation(encodingOptions.ID3Version as 3 | 4), 0);
 
 		return retBuf;
 	}
 
 	/**
-	 * Get a binary representation of the flags
-	 * @param ID3Version - The version of the ID3v2 spec to adhere to when crafting the binary representation
-	 * @returns A string containing the binary representation
+	 * Get a the byte representation of the flags
+	 * @param ID3Version - The version of the ID3v2 spec to adhere to when crafting the byte representation
+	 * @returns The byte representation
 	 */
-	private getBinaryRepresentation(ID3Version: 3 | 4){
+	private getByteRepresentation(ID3Version: 3 | 4){
 		if(this.flags === undefined){
-			return "0".repeat(16);
+			return FlagByte.encode([], 2);
 		}
 
 		if(ID3Version === 3){
-			return `
-				${this.flags.discardOnTagAlteration ? "0" : "1"}
-				${this.flags.discardOnFileAlteration ? "0" : "1"}
-				${this.flags.readOnly ? "1" : "0"}
-				${"0".repeat(5)}
-				${this.flags.compression ? "1" : "0"}
-				${this.flags.encryption ? "1" : "0"}
-				${this.flags.groupingIdentity ? "1" : "0"}
-				${"0".repeat(5)}
-			`;
+			return FlagByte.encode([
+				this.flags.discardOnTagAlteration,
+				this.flags.discardOnFileAlteration,
+				this.flags.readOnly,
+				false,
+				false,
+				false,
+				false,
+				false,
+				this.flags.compression,
+				this.flags.encryption,
+				this.flags.groupingIdentity
+			]);
 		}
 
-		return `
-			0
-			${this.flags.discardOnTagAlteration ? "1" : "0"}
-			${this.flags.discardOnFileAlteration ? "1" : "0"}
-			${this.flags.readOnly ? "1" : "0"}
-			${"0".repeat(5)}
-			${this.flags.groupingIdentity ? "1" : "0"}
-			${"0".repeat(2)}
-			${this.flags.compression ? "1" : "0"}
-			${this.flags.encryption ? "1" : "0"}
-			${(this.flags as IV4FrameFlags).unsynchronisation ? "1" : "0"}
-			${(this.flags as IV4FrameFlags).dataLengthIndicator ? "1" : "0"}
-		`;
+		return FlagByte.encode([
+			false,
+			this.flags.discardOnTagAlteration,
+			this.flags.discardOnFileAlteration,
+			this.flags.readOnly,
+			false,
+			false,
+			false,
+			false,
+			false,
+			this.flags.groupingIdentity,
+			false,
+			false,
+			this.flags.compression,
+			this.flags.encryption,
+			(this.flags as IV4FrameFlags).unsynchronisation,
+			(this.flags as IV4FrameFlags).dataLengthIndicator
+		]);
 	}
 }

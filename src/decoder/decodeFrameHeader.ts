@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { SynchsafeInteger, getIdentifierLength } from '@utils';
+import { SynchsafeInteger, getIdentifierLength, FlagByte } from '@utils';
 
 /**
  * Data that is stored in (and about) the header of a singular frame
@@ -101,7 +101,7 @@ export default (data: Buffer, ID3Version: 2 | 3 | 4): IFrameHeader => {
 	let decodedFlags: IV3FrameFlags | IV4FrameFlags | undefined;
 
 	if(ID3Version > 2){
-		const flags = data.readInt16BE(8).toString(2).split("").map(bit => bit === "1");
+		const flags = FlagByte.decode(data.readInt16BE(8) , 2);
 
 		decodedFlags = ID3Version === 3 ? {
 			discardOnTagAlteration: flags[0],

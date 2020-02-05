@@ -1,6 +1,7 @@
 export { default as TextEncodingType, TextEncodingName } from "./textEncodingType";
 export { default as SynchsafeInteger } from "./synchsafeIntegers";
 export { default as TimestampUnit, TimestampUnits } from "./timestampUnit";
+export { default as FlagByte } from "./flagByte";
 
 import { remappedFrames } from "../data.json";
 
