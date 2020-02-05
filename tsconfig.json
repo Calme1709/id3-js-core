@@ -50,8 +50,5 @@
 				"frames/index.ts"
 			]
 		}
-	},
-	"files": [
-		"src/index.ts"
-	]
+	}
 }
