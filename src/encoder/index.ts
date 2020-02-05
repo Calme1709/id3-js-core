@@ -2,6 +2,7 @@ import { Frame } from '@frames';
 import { IUserDefinedEncodingOptions, IEncodingOptions, IDefaultEncodingOptions } from './encodingOptions';
 import { Buffer } from 'buffer';
 import isVersionSupported from './isVersionSupported';
+import TagHeaderEncoder from "./tagHeaderEncoder";
 import { defaultEncodingOptions } from "@data";
 import { TextEncodingType } from '@utils';
 
@@ -56,5 +57,10 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 		encodedFrames.push(frame.encode(computedEncodingOptions));
 	}
 
-	return Buffer.concat(encodedFrames);
+	const encodedFrameData = Buffer.concat(encodedFrames);
+
+	return Buffer.concat([
+		TagHeaderEncoder.encode(encodedFrameData.length, computedEncodingOptions),
+		...encodedFrames
+	]);
 };
