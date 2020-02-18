@@ -16,6 +16,7 @@ import {
 	SynchronisedTempoCodesFrame,
 	UnsynchronisedLyricsFrame
 } from "@frames";
+import { Unsynchronisation } from "@utils";
 
 /**
  * The decoder class
@@ -35,12 +36,16 @@ export default class Decoder {
 
 		const tagHeader = decodeTagHeader(data.slice(tagOffset));
 
-		const framesData = data.slice(tagOffset + tagHeader.headerSize, tagOffset + tagHeader.tagSize);
+		const unsynchronisedFrameData = data.slice(tagOffset + tagHeader.headerSize, tagOffset + tagHeader.tagSize);
+
+		const framesData = tagHeader.unsynchronisation ?
+			Unsynchronisation.decode(unsynchronisedFrameData) :
+			unsynchronisedFrameData;
 
 		let index = 0;
 		const frames: Frame[] = [];
 
-		while(index < tagHeader.tagSize - tagHeader.headerSize && !(framesData[index] === 0x00 && framesData[index + 1] === 0x00)){
+		while(index < framesData.length && !(framesData[index] === 0x00 && framesData[index + 1] === 0x00)){
 			const frameHeader = decodeFrameHeader(framesData.slice(index), tagHeader.version);
 
 			const frameData = framesData.slice(index, index + frameHeader.frameSize);

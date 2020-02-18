@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { SynchsafeInteger, FlagByte } from '@utils';
+import { SynchsafeInteger, FlagByte, Unsynchronisation } from '@utils';
 
 /**
  * The data that is stored in the header of a tag regardless of which version of the spec it is following
@@ -184,13 +184,16 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 			let crcData: number | undefined;
 			let paddingSize: number | undefined;
 
+			//Grab 30 bytes, this should be large enough for any data
+			const extendedHeaderData = flags[0] ? Unsynchronisation.decode(data.slice(10, 40)) : data.slice(10, 40);
+
 			if(flags[1]){
-				headerSize += SynchsafeInteger.decode(data.readInt32BE(10)) + 4;
+				headerSize += SynchsafeInteger.decode(extendedHeaderData.readInt32BE(0)) + 4;
 
-				paddingSize = SynchsafeInteger.decode(data.readInt32BE(14));
+				paddingSize = SynchsafeInteger.decode(extendedHeaderData.readInt32BE(6));
 
-				if(FlagByte.decode(data[14])[0]){
-					crcData = data.readInt32BE(20);
+				if(FlagByte.decode(extendedHeaderData[4])[0]){
+					crcData = data.readInt32BE(10);
 				}
 			}
 
@@ -210,11 +213,13 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 			let tagRestrictions: ITagRestrictions | undefined;
 
 			if(flags[1]){
-				let flagDataOffset = 16;
+				const extendedHeaderData = flags[0] ? Unsynchronisation.decode(data.slice(10, 50)) : data.slice(10, 50);
 
-				headerSize += SynchsafeInteger.decode(data.readInt32BE(10)) + 4;
+				let flagDataOffset = 6;
 
-				const extendedFlags = FlagByte.decode(data[15]);
+				headerSize += SynchsafeInteger.decode(extendedHeaderData.readInt32BE(0)) + 4;
+
+				const extendedFlags = FlagByte.decode(extendedHeaderData[5]);
 
 				tagIsAnUpdate = extendedFlags[1];
 
@@ -223,13 +228,13 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 				}
 
 				if(extendedFlags[2]){
-					crcData = SynchsafeInteger.decode(data.readIntBE(flagDataOffset + 1, 5));
+					crcData = SynchsafeInteger.decode(extendedHeaderData.readIntBE(flagDataOffset + 1, 5));
 
 					flagDataOffset += 6;
 				}
 
 				if(extendedFlags[3]){
-					const restrictionsByte = data[flagDataOffset + 1].toString(2);
+					const restrictionsByte = extendedHeaderData[flagDataOffset + 1].toString(2);
 
 					tagRestrictions = {
 						tagSize: parseInt(restrictionsByte.substr(0, 2), 2) as 0 | 1 | 2 | 3,
@@ -239,6 +244,9 @@ export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 						imageSize: parseInt(restrictionsByte.substr(6, 2), 2) as 0 | 1 | 2 | 3
 					};
 				}
+
+				//Add the size of the unsynchronisation
+				headerSize += flags[0] ? extendedHeaderData.slice(0, headerSize - 10).filter(byte => byte === 0xFF).length : 0;
 			}
 
 			return {

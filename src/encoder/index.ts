@@ -4,7 +4,7 @@ import { Buffer } from 'buffer';
 import isVersionSupported from './isVersionSupported';
 import TagHeaderEncoder from "./tagHeaderEncoder";
 import { defaultEncodingOptions } from "@data";
-import { TextEncodingType } from '@utils';
+import { TextEncodingType, Unsynchronisation } from '@utils';
 
 export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) => {
 	if(encodingOptions.ID3Version && !isVersionSupported(encodingOptions.ID3Version, frames, encodingOptions)){
@@ -59,8 +59,10 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 
 	const encodedFrameData = Buffer.concat(encodedFrames);
 
+	const frameBuffer = encodingOptions.unsynchronisation ? Unsynchronisation.encode(encodedFrameData) : encodedFrameData;
+
 	return Buffer.concat([
-		TagHeaderEncoder.encode(encodedFrameData.length, computedEncodingOptions),
-		...encodedFrames
+		TagHeaderEncoder.encode(frameBuffer.length, computedEncodingOptions),
+		frameBuffer
 	]);
 };

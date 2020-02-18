@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import { IEncodingOptions } from './encodingOptions';
-import { SynchsafeInteger, FlagByte } from "@utils";
+import { SynchsafeInteger, FlagByte, Unsynchronisation } from "@utils";
 
 /**
  * A class which handles all of the logic for encoding a tag header
@@ -48,7 +48,7 @@ export default class TagHeaderEncoder {
 				extendedHeaderBuffer.writeInt32BE(0, 6);									//Padding size
 				extendedHeaderBuffer.writeInt32BE(encodingOptions.crcData as number, 10);	//The CRC data
 
-				return extendedHeaderBuffer;
+				return encodingOptions.unsynchronisation ? Unsynchronisation.encode(extendedHeaderBuffer) : extendedHeaderBuffer;
 			}
 
 			case 4: {
@@ -76,9 +76,6 @@ export default class TagHeaderEncoder {
 
 					crcDataBuffer[0] = 0x05;
 
-					console.log(SynchsafeInteger.encode(encodingOptions.crcData));
-					console.log(SynchsafeInteger.decode(SynchsafeInteger.encode(encodingOptions.crcData)));
-
 					crcDataBuffer.writeIntBE(SynchsafeInteger.encode(encodingOptions.crcData), 1, 5);
 
 					buffers.push(crcDataBuffer);
@@ -104,12 +101,9 @@ export default class TagHeaderEncoder {
 
 				sizeBuffer.writeInt32BE(extendedHeaderExcludingSize.length, 0);
 
-				return Buffer.concat([
-					sizeBuffer,
-					extendedHeaderExcludingSize
-				]);
+				const extendedHeaderBuffer = Buffer.concat([ sizeBuffer, extendedHeaderExcludingSize ]);
 
-				break;
+				return encodingOptions.unsynchronisation ? Unsynchronisation.encode(extendedHeaderBuffer) : extendedHeaderBuffer;
 			}
 
 			default:

@@ -1,4 +1,4 @@
-import { ITagRestrictions } from '../decoder/decodeTagHeader';
+import { ITagRestrictions } from '@decoder/decodeTagHeader';
 import { TextEncodingType, TextEncodingName } from '@utils';
 
 /**
