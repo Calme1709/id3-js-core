@@ -10,3 +10,4 @@ export { default as EventTimingCodesFrame } from "./eventTimingCodesFrame";
 export { default as MPEGLocationLookupTableFrame } from "./mpegLocationLookupTableFrame";
 export { default as SynchronisedTempoCodesFrame } from "./synchronisedTempoCodeFrame";
 export { default as UnsynchronisedLyricsFrame } from "./unsynchronisedLyricsFrame";
+export { default as SynchronisedLyricsFrame } from "./synchronisedLyricsFrame";

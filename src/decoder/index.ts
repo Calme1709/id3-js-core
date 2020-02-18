@@ -14,7 +14,8 @@ import {
 	EventTimingCodesFrame,
 	MPEGLocationLookupTableFrame,
 	SynchronisedTempoCodesFrame,
-	UnsynchronisedLyricsFrame
+	UnsynchronisedLyricsFrame,
+	SynchronisedLyricsFrame
 } from "@frames";
 import { Unsynchronisation } from "@utils";
 
@@ -86,47 +87,42 @@ export default class Decoder {
 				case "UFI":
 				case "UFID":
 					return new UFIDFrame(frameData, ID3Version);
-					break;
 
 				case "TXX":
 				case "TXXX":
 					return new UserDefinedTextInformationFrame(frameData, ID3Version);
-					break;
 
 				case "WXX":
 				case "WXXX":
 					return new UserDefinedURLLinkFrame(frameData, ID3Version);
-					break;
 
 				case "IPL":
 				case "IPLS":
 					return new InvolvedPeopleListFrame(frameData, ID3Version);
-					break;
 
 				case "MCI":
 				case "MCDI":
 					return new MusicCDIdentifierFrame(frameData, ID3Version);
-					break;
 
 				case "ETC":
 				case "ETCO":
 					return new EventTimingCodesFrame(frameData, ID3Version);
-					break;
 
 				case "MLL":
 				case "MLLT":
 					return new MPEGLocationLookupTableFrame(frameData, ID3Version);
-					break;
 
 				case "STC":
 				case "SYTC":
 					return new SynchronisedTempoCodesFrame(frameData, ID3Version);
-					break;
 
 				case "ULT":
 				case "USLT":
 					return new UnsynchronisedLyricsFrame(frameData, ID3Version);
-					break;
+
+				case "SLT":
+				case "SYLT":
+					return new SynchronisedLyricsFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);

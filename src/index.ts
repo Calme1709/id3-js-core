@@ -5,6 +5,8 @@ import { Buffer } from "buffer";
 import { Frame } from "@frames";
 import { IUserDefinedEncodingOptions } from '@encoder/encodingOptions';
 
+export { TimestampUnits } from "@utils";
+
 export * from "./frames";
 
 export default class ID3JS {
