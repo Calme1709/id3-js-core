@@ -48,7 +48,7 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 	public identifier!: string;
 
 	/**
-	 * The value of this text frame
+	 * The value of this frame
 	 */
 	public value: ISynchronisedTempoCodesValue;
 
@@ -61,7 +61,6 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 
 	/**
 	 * Create a new synchronised tempo codes frame
-	 * @param identifier - The identifier of this frame
 	 * @param value - The value of this synchronised tempo codes frame
 	 */
 	public constructor(value: ISynchronisedTempoCodesValue);
