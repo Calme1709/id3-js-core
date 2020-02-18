@@ -94,7 +94,7 @@
 		],
 		"max-file-line-count": [
 			true,
-			200
+			300
 		],
 		"new-parens": true,
 		"no-bitwise": true,
