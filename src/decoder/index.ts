@@ -1,5 +1,5 @@
 import decodeTagHeader from "./decodeTagHeader";
-import decodeFrameHeader from "./decodeFrameHeader";
+import decodeFrameHeader, { IFrameHeader } from "./decodeFrameHeader";
 import { Buffer } from "buffer";
 
 import {
@@ -48,63 +48,7 @@ export default class Decoder {
 		while(index < framesData.length && !(framesData[index] === 0x00 && framesData[index + 1] === 0x00)){
 			const frameHeader = decodeFrameHeader(framesData.slice(index), tagHeader.version);
 
-			const frameData = framesData.slice(index, index + frameHeader.frameSize);
-
-			if(frameHeader.identifier[0] === "T" && ![ "TXX", "TXXX" ].includes(frameHeader.identifier)){
-				frames.push(new TextInformationFrame(frameData, tagHeader.version));
-			} else if(frameHeader.identifier[0] === "W" && ![ "WXX", "WXXX" ].includes(frameHeader.identifier)) {
-				frames.push(new URLLinkFrame(frameData, tagHeader.version));
-			} else {
-				switch(frameHeader.identifier){
-					case "UFI":
-					case "UFID":
-						frames.push(new UFIDFrame(frameData, tagHeader.version));
-						break;
-
-					case "TXX":
-					case "TXXX":
-						frames.push(new UserDefinedTextInformationFrame(frameData, tagHeader.version));
-						break;
-
-					case "WXX":
-					case "WXXX":
-						frames.push(new UserDefinedURLLinkFrame(frameData, tagHeader.version));
-						break;
-
-					case "IPL":
-					case "IPLS":
-						frames.push(new InvolvedPeopleListFrame(frameData, tagHeader.version));
-						break;
-
-					case "MCI":
-					case "MCDI":
-						frames.push(new MusicCDIdentifierFrame(frameData, tagHeader.version));
-						break;
-
-					case "ETC":
-					case "ETCO":
-						frames.push(new EventTimingCodesFrame(frameData, tagHeader.version));
-						break;
-
-					case "MLL":
-					case "MLLT":
-						frames.push(new MPEGLocationLookupTableFrame(frameData, tagHeader.version));
-						break;
-
-					case "STC":
-					case "SYTC":
-						frames.push(new SynchronisedTempoCodesFrame(frameData, tagHeader.version));
-						break;
-
-					case "ULT":
-					case "USLT":
-						frames.push(new UnsynchronisedLyricsFrame(frameData, tagHeader.version));
-						break;
-
-					default:
-						throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
-				}
-			}
+			frames.push(this.decodeFrame(frameHeader, framesData.slice(index, index + frameHeader.frameSize), tagHeader.version));
 
 			index += frameHeader.frameSize;
 		}
@@ -123,5 +67,70 @@ export default class Decoder {
 	 */
 	public static decodeFrameHeader(data: Buffer, ID3Version: 2 | 3 | 4){
 		return decodeFrameHeader(data, ID3Version);
+	}
+
+	/**
+	 * Decode a frame and return it
+	 * @param frameHeader - The header data of the frame, this is used to find which method of decoding is to be used
+	 * @param frameData - The frame data, this is the data that makes up the frame
+	 * @param ID3Version - The ID3 version used to decode the frame
+	 * @retuns The decode frame
+	 */
+	private static decodeFrame(frameHeader: IFrameHeader, frameData: Buffer, ID3Version: 2 | 3 | 4){
+		if(frameHeader.identifier[0] === "T" && ![ "TXX", "TXXX" ].includes(frameHeader.identifier)){
+			return new TextInformationFrame(frameData, ID3Version);
+		} else if(frameHeader.identifier[0] === "W" && ![ "WXX", "WXXX" ].includes(frameHeader.identifier)) {
+			return new URLLinkFrame(frameData, ID3Version);
+		} else {
+			switch(frameHeader.identifier){
+				case "UFI":
+				case "UFID":
+					return new UFIDFrame(frameData, ID3Version);
+					break;
+
+				case "TXX":
+				case "TXXX":
+					return new UserDefinedTextInformationFrame(frameData, ID3Version);
+					break;
+
+				case "WXX":
+				case "WXXX":
+					return new UserDefinedURLLinkFrame(frameData, ID3Version);
+					break;
+
+				case "IPL":
+				case "IPLS":
+					return new InvolvedPeopleListFrame(frameData, ID3Version);
+					break;
+
+				case "MCI":
+				case "MCDI":
+					return new MusicCDIdentifierFrame(frameData, ID3Version);
+					break;
+
+				case "ETC":
+				case "ETCO":
+					return new EventTimingCodesFrame(frameData, ID3Version);
+					break;
+
+				case "MLL":
+				case "MLLT":
+					return new MPEGLocationLookupTableFrame(frameData, ID3Version);
+					break;
+
+				case "STC":
+				case "SYTC":
+					return new SynchronisedTempoCodesFrame(frameData, ID3Version);
+					break;
+
+				case "ULT":
+				case "USLT":
+					return new UnsynchronisedLyricsFrame(frameData, ID3Version);
+					break;
+
+				default:
+					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
+			}
+		}
 	}
 }
