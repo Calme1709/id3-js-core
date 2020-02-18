@@ -102,7 +102,6 @@ export default class SynchronisedTempoCodesFrame extends Frame {
 
 	/**
 	 * Encode the content of the frame
-	 * @param encodingOptions - The encoding options to encode with
 	 * @returns The encoded content
 	 */
 	public encodeContent(){
