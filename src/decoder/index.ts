@@ -15,7 +15,8 @@ import {
 	MPEGLocationLookupTableFrame,
 	SynchronisedTempoCodesFrame,
 	UnsynchronisedLyricsFrame,
-	SynchronisedLyricsFrame
+	SynchronisedLyricsFrame,
+	CommentFrame
 } from "@frames";
 import { Unsynchronisation } from "@utils";
 
@@ -123,6 +124,10 @@ export default class Decoder {
 				case "SLT":
 				case "SYLT":
 					return new SynchronisedLyricsFrame(frameData, ID3Version);
+
+				case "COM":
+				case "COMM":
+					return new CommentFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);

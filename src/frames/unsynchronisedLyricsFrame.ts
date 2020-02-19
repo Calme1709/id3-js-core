@@ -1,8 +1,5 @@
 import { Buffer } from 'buffer';
-import Frame from './frameComponents/frame';
-import { IEncodingOptions } from '@encoder/encodingOptions';
-import { IVersionSupport } from '@encoder/isVersionSupported';
-import { TextEncodingType } from '@utils';
+import CommentFrame from './commentFrame';
 
 /**
  * The information that is stored in a unsynchronised lyrics frame
@@ -16,21 +13,11 @@ interface IUnsynchronisedLyricsValue {
 /**
  * An unsynchronised lyrics frame
  */
-export default class UnsynchronisedLyricsFrame extends Frame {
+export default class UnsynchronisedLyricsFrame extends CommentFrame {
 	/**
 	 * The type of frame
 	 */
 	public frameType = "UNSYNCHRONISEDLYRICSFRAME";
-
-	/**
-	 * The identifier of this frame
-	 */
-	public identifier!: string;
-
-	/**
-	 * The value of this text frame
-	 */
-	public value: IUnsynchronisedLyricsValue;
 
 	/**
 	 * Decode an unsynchronised lyrics frame from a buffer
@@ -44,54 +31,11 @@ export default class UnsynchronisedLyricsFrame extends Frame {
 	 * @param value - The value of this unsynchronised lyrics frame
 	 */
 	public constructor(value: IUnsynchronisedLyricsValue);
-	public constructor(dataOrValue: Buffer | IUnsynchronisedLyricsValue, ID3Version?: number){
-		super();
+	public constructor(...args: [ Buffer, number ] | [ IUnsynchronisedLyricsValue ]){
+		super(...args as [ Buffer, number ]);
 
-		if(dataOrValue instanceof Buffer){
-			const headerInfo = this.decodeHeader(dataOrValue, ID3Version as 3 | 4);
-
-			const encoding = new TextEncodingType(dataOrValue[headerInfo.headerSize]);
-
-			const language = dataOrValue.slice(headerInfo.headerSize + 1, headerInfo.headerSize + 4).toString("latin1");
-
-			const splitPoint = dataOrValue.indexOf(encoding.terminator, headerInfo.headerSize + 4);
-
-			this.value = {
-				language,
-				description: encoding.decodeText(dataOrValue.slice(headerInfo.headerSize + 4, splitPoint)),
-				value: encoding.decodeText(dataOrValue.slice(splitPoint + encoding.terminator.length))
-			};
-		} else {
+		if(!(args[0] instanceof Buffer)){
 			this.identifier = "USLT";
-
-			this.value = dataOrValue;
 		}
-	}
-
-	/**
-	 * Encode the content of the frame
-	 * @param encodingOptions - The encoding options to encode with
-	 * @returns The encoded content
-	 */
-	public encodeContent(encodingOptions: IEncodingOptions){
-		return Buffer.concat([
-			Buffer.from(new Uint8Array([ encodingOptions.textEncoding.byteRepresentation ])),
-			Buffer.from(this.value.language.substr(0, 3), "latin1"),
-			encodingOptions.textEncoding.encodeText(this.value.description),
-			encodingOptions.textEncoding.terminator,
-			encodingOptions.textEncoding.encodeText(this.value.value)
-		]);
-	}
-
-	/**
-	 * Test if the content of this frame can be encoded with the specified version
-	 * @param version - The version to test
-	 * @returns Whether the content can be encoded with the specified version
-	 */
-	protected contentSupportsVersion(): IVersionSupport{
-		return {
-			supportsVersion: true,
-			reason: ""
-		};
 	}
 }

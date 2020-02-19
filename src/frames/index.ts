@@ -11,3 +11,4 @@ export { default as MPEGLocationLookupTableFrame } from "./mpegLocationLookupTab
 export { default as SynchronisedTempoCodesFrame } from "./synchronisedTempoCodeFrame";
 export { default as UnsynchronisedLyricsFrame } from "./unsynchronisedLyricsFrame";
 export { default as SynchronisedLyricsFrame } from "./synchronisedLyricsFrame";
+export { default as CommentFrame } from "./commentFrame";
