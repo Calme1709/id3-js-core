@@ -87,15 +87,15 @@ export default class RelativeVolumeAdjustmentFrame extends Frame {
 	};
 
 	/**
-	 * Decode a MPEG location lookup table frame from a buffer
+	 * Decode a relative volume adjustment frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
 	 */
 	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * Create a new MPEG location lookup table frame
-	 * @param value - The value of this MPEG location lookup table frame
+	 * Create a newrelative volume adjustment frame
+	 * @param value - The value of this relative volume adjustment frame
 	 */
 	public constructor(value: IRelativeVolumeAdjustmentValue);
 	public constructor(dataOrValue: Buffer | IRelativeVolumeAdjustmentValue, ID3Version?: number){
