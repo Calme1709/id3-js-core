@@ -3,6 +3,7 @@ export { default as SynchsafeInteger } from "./synchsafeIntegers";
 export { default as TimestampUnit, TimestampUnits } from "./timestampUnit";
 export { default as FlagByte } from "./flagByte";
 export { default as Unsynchronisation } from "./unsynchronisation";
+export { default as bufferFromNumbers } from "./bufferFromNumbers";
 
 import { remappedFrames } from "../data.json";
 

@@ -12,3 +12,4 @@ export { default as SynchronisedTempoCodesFrame } from "./synchronisedTempoCodeF
 export { default as UnsynchronisedLyricsFrame } from "./unsynchronisedLyricsFrame";
 export { default as SynchronisedLyricsFrame } from "./synchronisedLyricsFrame";
 export { default as CommentFrame } from "./commentFrame";
+export { default as RelativeVolumeAdjustmentFrame } from "./relativeVolumeAdjustmentFrame";

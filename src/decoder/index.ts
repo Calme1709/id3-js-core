@@ -16,8 +16,10 @@ import {
 	SynchronisedTempoCodesFrame,
 	UnsynchronisedLyricsFrame,
 	SynchronisedLyricsFrame,
-	CommentFrame
+	CommentFrame,
+	RelativeVolumeAdjustmentFrame
 } from "@frames";
+
 import { Unsynchronisation } from "@utils";
 
 /**
@@ -128,6 +130,10 @@ export default class Decoder {
 				case "COM":
 				case "COMM":
 					return new CommentFrame(frameData, ID3Version);
+
+				case "RVA":
+				case "RVAD":
+					return new RelativeVolumeAdjustmentFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
