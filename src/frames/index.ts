@@ -13,3 +13,4 @@ export { default as UnsynchronisedLyricsFrame } from "./unsynchronisedLyricsFram
 export { default as SynchronisedLyricsFrame } from "./synchronisedLyricsFrame";
 export { default as CommentFrame } from "./commentFrame";
 export { default as RelativeVolumeAdjustmentFrame } from "./relativeVolumeAdjustmentFrame";
+export { default as RelativeVolumeAdjustmentV2Frame } from "./relativeVolumeAdjustmentFrameV2";
