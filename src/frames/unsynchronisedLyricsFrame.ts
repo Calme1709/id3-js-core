@@ -15,11 +15,6 @@ interface IUnsynchronisedLyricsValue {
  */
 export default class UnsynchronisedLyricsFrame extends CommentFrame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "UNSYNCHRONISEDLYRICSFRAME";
-
-	/**
 	 * Decode an unsynchronised lyrics frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on

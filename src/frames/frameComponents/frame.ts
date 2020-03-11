@@ -10,7 +10,6 @@ import FrameFlagManager from './frameFlagManager';
  */
 export default abstract class Frame {
 	public abstract identifier: string;
-	public abstract frameType: string;
 	// tslint:disable-next-line: no-any
 	public abstract value: any;
 

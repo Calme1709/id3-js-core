@@ -7,8 +7,12 @@ import { defaultEncodingOptions } from "@data";
 import { TextEncodingType, Unsynchronisation } from '@utils';
 
 export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) => {
-	if(encodingOptions.ID3Version && !isVersionSupported(encodingOptions.ID3Version, frames, encodingOptions)){
-		throw new Error(`Cannot encode using ID3v2.${encodingOptions.ID3Version}`);
+	if(encodingOptions.ID3Version){
+		const targetVersionSupport = isVersionSupported(encodingOptions.ID3Version, frames, encodingOptions);
+
+		if(!targetVersionSupport.supported){
+			throw new Error(`Cannot encode using ID3v2.${encodingOptions.ID3Version}: \n${targetVersionSupport.reasons.map(reason => `\t${reason}\n`)}`);
+		}
 	}
 
 	const reasonsForVersionNotSupported: {[key: number]: string[]} = {
@@ -26,6 +30,8 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 
 		return versionSupport.supported;
 	});
+
+	console.log(encodingVersion);
 
 	if(encodingVersion === undefined){
 		throw new Error(

@@ -15,11 +15,6 @@ interface IUFIDValue {
  */
 export default class UFIDFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "UFIDFRAME";
-
-	/**
 	 * The identifier of this frame
 	 */
 	public identifier!: string;

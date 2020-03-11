@@ -11,11 +11,6 @@ import { IEncodingOptions } from '@encoder/encodingOptions';
  */
 export default class TextInformationFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "TEXTINFORMATIONFRAME";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;

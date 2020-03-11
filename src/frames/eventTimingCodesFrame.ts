@@ -96,11 +96,6 @@ interface IEventTimingCodesValue {
  */
 export default class EventTimingCodesFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "EVENTTIMINGCODESFRAME";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;

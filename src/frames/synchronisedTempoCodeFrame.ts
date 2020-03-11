@@ -38,11 +38,6 @@ interface ISynchronisedTempoCodesValue {
  */
 export default class SynchronisedTempoCodesFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "SYNCHRONISEDTEMPOCODESFRAME";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;

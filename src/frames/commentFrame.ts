@@ -18,11 +18,6 @@ interface ICommentValue {
  */
 export default class CommentFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "COMMENTFRAME";
-
-	/**
 	 * The identifier of this frame
 	 */
 	public identifier!: string;

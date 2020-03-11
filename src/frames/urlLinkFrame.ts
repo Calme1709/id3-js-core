@@ -7,11 +7,6 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
  */
 export default class URLLinkFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "URLLINKFRAME";
-
-	/**
 	 * The identifier of this frame
 	 */
 	public identifier!: string;

@@ -54,11 +54,6 @@ interface IRelativeVolumeAdjustmentV2Value {
  */
 export default class RelativeVolumeAdjustmentV2Frame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "RELATIVEVOLUMEADJUSTMENTV2FRAME";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;

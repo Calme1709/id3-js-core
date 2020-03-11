@@ -17,11 +17,6 @@ interface IUserDefinedURLLinkValue {
  */
 export default class UserDefinedURLLinkFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "USERDEFINEDURLLINKFRAME";
-
-	/**
 	 * The identifier of this frame
 	 */
 	public identifier!: string;

@@ -34,11 +34,6 @@ interface IEqualisationValue {
  */
 export default class EqualisationFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "EQUALISATIONFRAME";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;

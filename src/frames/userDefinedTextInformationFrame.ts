@@ -17,11 +17,6 @@ interface IUserDefinedTextInformationValue {
  */
 export default class UserDefinedTextInformationFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "USERDEFINEDTEXTINFORMATIONFRAME";
-
-	/**
 	 * The identifier of this frame
 	 */
 	public identifier!: string;

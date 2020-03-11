@@ -48,11 +48,6 @@ interface IMPEGLocationLookupTableValue {
  */
 export default class MPEGLocationLookupTableFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "MPEGLOCATIONLOOKUPTABLEFRAME";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;

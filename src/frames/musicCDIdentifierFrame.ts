@@ -7,11 +7,6 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
  */
 export default class MusicCDIdentifierFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "MUSICCDIDENTIFIERFRAME";
-
-	/**
 	 * The identifier of this frame
 	 */
 	public identifier!: string;

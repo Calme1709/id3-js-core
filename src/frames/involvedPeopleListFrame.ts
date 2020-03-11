@@ -17,11 +17,6 @@ type InvolvedPeopleListValue = Array<{
  */
 export default class InvolvedPeopleListFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "INVOLVEDPEOPLELIST";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;

@@ -104,11 +104,6 @@ interface ISynchronisedLyricsValue {
  */
 export default class SynchronisedLyricsFrame extends Frame {
 	/**
-	 * The type of frame
-	 */
-	public frameType = "SYNCHRONISEDLYRICSFRAME";
-
-	/**
 	 * The frame identifier
 	 */
 	public identifier!: string;
