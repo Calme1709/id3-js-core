@@ -14,3 +14,4 @@ export { default as SynchronisedLyricsFrame } from "./synchronisedLyricsFrame";
 export { default as CommentFrame } from "./commentFrame";
 export { default as RelativeVolumeAdjustmentFrame } from "./relativeVolumeAdjustmentFrame";
 export { default as RelativeVolumeAdjustmentV2Frame } from "./relativeVolumeAdjustmentFrameV2";
+export { default as EqualisationFrame } from "./equalisationFrame";
