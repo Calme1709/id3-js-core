@@ -31,8 +31,6 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 		return versionSupport.supported;
 	});
 
-	console.log(encodingVersion);
-
 	if(encodingVersion === undefined){
 		throw new Error(
 			`For all versions of the ID3v2 spec there is atleast one component of the data that cannot be encoded;\n

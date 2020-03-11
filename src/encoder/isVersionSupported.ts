@@ -31,8 +31,6 @@ export default (version: 2 | 3 | 4, frames: Frame[], encodingOptions: IUserDefin
 	for(const frame of frames){
 		const versionSupport = frame.supportsVersion(version);
 
-		console.log(versionSupport);
-
 		if(!versionSupport.supportsVersion){
 			reasonsForVersionNotSupported.push(`Frame of type '${frame.constructor.name}' cannot be encoded using ID3v2.${version}: ${versionSupport.reason}`);
 		}
