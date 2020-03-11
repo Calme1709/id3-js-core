@@ -27,12 +27,7 @@ interface IUserDefinedTextInformationValue {
  *
  * There may be more than one of this frame in a tag, but only one with the same description.
  */
-export default class UserDefinedTextInformationFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: IUserDefinedTextInformationValue;
-
+export default class UserDefinedTextInformationFrame extends Frame<IUserDefinedTextInformationValue> {
 	/**
 	 * Decode a User Defined Text Information frame from a buffer
 	 * @param data - The data to decode

@@ -98,12 +98,7 @@ interface IEventTimingCodesValue {
  *
  * There may only be one of these frames within a tag
  */
-export default class EventTimingCodesFrame extends Frame {
-	/**
-	 * The value of this text frame
-	 */
-	public value: IEventTimingCodesValue;
-
+export default class EventTimingCodesFrame extends Frame<IEventTimingCodesValue> {
 	/**
 	 * Decode an event timing codes frame from a buffer
 	 * @param data - The data to decode

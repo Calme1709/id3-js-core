@@ -26,12 +26,7 @@ interface IUFIDValue {
  *
  * There may be more than one of this frame in a tag, but only one with the same owner identifier.
  */
-export default class UFIDFrame extends Frame {
-	/**
-	 * The value of this text frame
-	 */
-	public value: IUFIDValue;
-
+export default class UFIDFrame extends Frame<IUFIDValue> {
 	/**
 	 * Decode a UFID frame from a buffer
 	 * @param data - The data to decode

@@ -58,12 +58,7 @@ interface IEqualisationV2Value {
  *
  * There may be more than one of this frame in each tag, but only one with the same identification string.
  */
-export default class EqualisationV2Frame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: IEqualisationV2Value;
-
+export default class EqualisationV2Frame extends Frame<IEqualisationV2Value> {
 	/**
 	 * Decode an equalisation V2 frame from a buffer
 	 * @param data - The data to decode

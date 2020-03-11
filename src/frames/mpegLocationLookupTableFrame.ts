@@ -51,12 +51,7 @@ interface IMPEGLocationLookupTableValue {
  *
  * There may only be one of this frame in a tag.
  */
-export default class MPEGLocationLookupTableFrame extends Frame {
-	/**
-	 * The value of this text frame
-	 */
-	public value: IMPEGLocationLookupTableValue;
-
+export default class MPEGLocationLookupTableFrame extends Frame<IMPEGLocationLookupTableValue> {
 	/**
 	 * Decode a MPEG location lookup table frame from a buffer
 	 * @param data - The data to decode

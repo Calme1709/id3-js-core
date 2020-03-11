@@ -24,12 +24,7 @@ interface IMusicCDIdentifierValue {
  *
  * There can only be one of this frame in a tag.
  */
-export default class MusicCDIdentifierFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: IMusicCDIdentifierValue;
-
+export default class MusicCDIdentifierFrame extends Frame<IMusicCDIdentifierValue> {
 	/**
 	 * Decode a Music CD Identifier frame from a buffer
 	 * @param data - The data to decode

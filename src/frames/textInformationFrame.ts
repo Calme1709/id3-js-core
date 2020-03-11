@@ -14,12 +14,7 @@ import { IEncodingOptions } from '@encoder/encodingOptions';
  *
  * There may only be one text information frame of its kind in an tag.
  */
-export default class TextInformationFrame extends Frame {
-	/**
-	 * The value of this text frame
-	 */
-	public value: string;
-
+export default class TextInformationFrame extends Frame<string> {
 	/**
 	 * Decode a text information frame from a buffer
 	 * @param data - The data to decode

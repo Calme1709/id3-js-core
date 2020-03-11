@@ -32,12 +32,7 @@ interface ICommentValue {
  *
  * There may be more than one of this frame in a tag, but only one with the same language and content descriptor.
  */
-export default class CommentFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: ICommentValue;
-
+export default class CommentFrame extends Frame<ICommentValue> {
 	/**
 	 * Decode a comment frame from a buffer
 	 * @param data - The data to decode

@@ -40,12 +40,7 @@ interface ISynchronisedTempoCodesValue {
  *
  * There may only be one of this frame in a tag.
  */
-export default class SynchronisedTempoCodesFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: ISynchronisedTempoCodesValue;
-
+export default class SynchronisedTempoCodesFrame extends Frame<ISynchronisedTempoCodesValue> {
 	/**
 	 * Decode a Synchronised Tempo Codes frame from a buffer
 	 * @param data - The data to decode

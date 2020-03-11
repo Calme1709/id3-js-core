@@ -8,10 +8,9 @@ import FrameFlagManager from './frameFlagManager';
 /**
  * The base class that all frames derive from
  */
-export default abstract class Frame {
+export default abstract class Frame<ValueType> {
 	public identifier = "";
-	// tslint:disable-next-line: no-any
-	public abstract value: any;
+	public value!: ValueType;
 
 	private readonly flagManager = new FrameFlagManager();
 

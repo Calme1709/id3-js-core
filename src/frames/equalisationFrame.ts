@@ -41,7 +41,7 @@ interface IEqualisationValue {
  *
  * There may only be one of this frame in a tag.
  */
-export default class EqualisationFrame extends Frame {
+export default class EqualisationFrame extends Frame<IEqualisationValue> {
 	/**
 	 * The value of this frame
 	 */

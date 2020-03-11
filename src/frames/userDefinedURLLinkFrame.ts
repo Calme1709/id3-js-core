@@ -27,12 +27,7 @@ interface IUserDefinedURLLinkValue {
  *
  * There may be more than one of this frame in a tag, but only one with the same description.
  */
-export default class UserDefinedURLLinkFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: IUserDefinedURLLinkValue;
-
+export default class UserDefinedURLLinkFrame extends Frame<IUserDefinedURLLinkValue>{
 	/**
 	 * Decode a User Defined URL Link frame from a buffer
 	 * @param data - The data to decode

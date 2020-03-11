@@ -37,12 +37,7 @@ interface IInvolvedPeopleListValue {
  *
  * There may only be one of this frame in a tag.
  */
-export default class InvolvedPeopleListFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: IInvolvedPeopleListValue;
-
+export default class InvolvedPeopleListFrame extends Frame<IInvolvedPeopleListValue> {
 	/**
 	 * Decode a involved people list from a buffer
 	 * @param data - The data to decode

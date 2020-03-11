@@ -69,12 +69,7 @@ interface IRelativeVolumeAdjustmentValue {
  *
  * There may only be one of this frame in a tag.
  */
-export default class RelativeVolumeAdjustmentFrame extends Frame {
-	/**
-	 * The value of this relative volume adjustment frame
-	 */
-	public value: IRelativeVolumeAdjustmentValue;
-
+export default class RelativeVolumeAdjustmentFrame extends Frame<IRelativeVolumeAdjustmentValue> {
 	/**
 	 * Decode a relative volume adjustment frame from a buffer
 	 * @param data - The data to decode

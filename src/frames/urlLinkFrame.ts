@@ -14,12 +14,7 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
  * WCOM - The multiple frames do not contain the same content.
  * WOAR - The audio contains more than one performer, and the frame does not contain the same content.
  */
-export default class URLLinkFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: string;
-
+export default class URLLinkFrame extends Frame<string> {
 	/**
 	 * Decode a URL link frame from a buffer
 	 * @param data - The data to decode

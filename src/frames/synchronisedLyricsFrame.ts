@@ -75,12 +75,7 @@ interface ISynchronisedLyricsValue {
  *
  * There may be more than one of this frame in a tag, however only one with the same language and content descriptor.
  */
-export default class SynchronisedLyricsFrame extends Frame {
-	/**
-	 * The value of this frame
-	 */
-	public value: ISynchronisedLyricsValue;
-
+export default class SynchronisedLyricsFrame extends Frame<ISynchronisedLyricsValue> {
 	/**
 	 * Decode a Synchronised Lyrics frame from a buffer
 	 * @param data - The data to decode
