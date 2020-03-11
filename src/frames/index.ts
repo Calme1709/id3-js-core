@@ -15,3 +15,4 @@ export { default as CommentFrame } from "./commentFrame";
 export { default as RelativeVolumeAdjustmentFrame } from "./relativeVolumeAdjustmentFrame";
 export { default as RelativeVolumeAdjustmentV2Frame } from "./relativeVolumeAdjustmentFrameV2";
 export { default as EqualisationFrame } from "./equalisationFrame";
+export { default as EqualisationV2Frame } from "./equalisationFrameV2";

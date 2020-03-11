@@ -19,7 +19,8 @@ import {
 	CommentFrame,
 	RelativeVolumeAdjustmentFrame,
 	RelativeVolumeAdjustmentV2Frame,
-	EqualisationFrame
+	EqualisationFrame,
+	EqualisationV2Frame
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -143,6 +144,9 @@ export default class Decoder {
 				case "EQU":
 				case "EQUA":
 					return new EqualisationFrame(frameData, ID3Version);
+
+				case "EQU2":
+					return new EqualisationV2Frame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
