@@ -3,41 +3,45 @@ import Frame from './frameComponents/frame';
 import { IVersionSupport } from '@encoder/isVersionSupported';
 
 /**
- * The equalisation adjustment for a frequency
+ * The adjustment for a specific frequency
  */
 interface IAdjustment {
 	/**
-	 * Whether the adjustment is positive or negative
+	 * Whether the adjustment is positive (true) or negative (false)
 	 */
 	increment: boolean;
 
 	/**
-	 * The frequency that this adjustment should be applied to
+	 * The frequency that this adjustment is related to
 	 */
 	frequency: number;
 
 	/**
-	 * The adjustment to be applied
+	 * The adjustment to the volume at the related frequency
 	 */
 	adjustment: number;
 }
 
 /**
- * The value of an equalisation frame without back channels
+ * The value of an equalisation frame
  */
 interface IEqualisationValue {
+	/**
+	 * The adjustments to occur at various frequencies.
+	 *
+	 * The adjustments should be ordered increasingly with reference to frequency. Not all frequencies have to be declared.
+	 */
 	adjustments: IAdjustment[];
 }
 
 /**
- * A relative volume adjustment frame
+ * Equalisation
+ *
+ * This is a subjective, alignment frame. It allows the user to predefine an equalisation curve within the audio file.
+ *
+ * There may only be one of this frame in a tag.
  */
 export default class EqualisationFrame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this frame
 	 */

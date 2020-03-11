@@ -6,19 +6,27 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
  * The information stored in a UFID frame
  */
 interface IUFIDValue {
+	/**
+	 * This is a null-terminated string with a URL containing an email address, or a link to a location where an email address
+	 * can be found, that belongs to the organisation responsible for this specific database implementation.
+	 */
 	ownerIdentifier: string;
+
+	/**
+	 * This is the unique identifier that is used to identify this file in a database.
+	 */
 	identifier: Buffer;
 }
 
 /**
- * A UFID frame
+ * UFID
+ *
+ * The purpose of this frame is to be able to identify the audio file in a database, that may provide more information
+ * relevant to the content.
+ *
+ * There may be more than one of this frame in a tag, but only one with the same owner identifier.
  */
 export default class UFIDFrame extends Frame {
-	/**
-	 * The identifier of this frame
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this text frame
 	 */
@@ -33,38 +41,25 @@ export default class UFIDFrame extends Frame {
 
 	/**
 	 * Create a new UFID frame
-	 * @param ownerIdentifier - The owner identifier that is to be stored in this frame, typically this is an email or a link
-	 * to a webpage where an email can be found
-	 * @param identifier - The unique file identifier, this is a buffer which can be up to 64 bits
+	 * @param value - The value of this UFID frame
 	 */
-	public constructor(ownerIdentifier: string, identifier: Buffer);
-	public constructor(dataOrOwnerIdentifier: string | Buffer, identifierOrID3Version: Buffer | number){
+	public constructor(value: IUFIDValue);
+	public constructor(dataOrValue: IUFIDValue | Buffer, identifierOrID3Version?: number){
 		super();
 
-		if(dataOrOwnerIdentifier instanceof Buffer){
-			const headerInfo = this.decodeHeader(dataOrOwnerIdentifier, identifierOrID3Version as 3 | 4);
+		if(dataOrValue instanceof Buffer){
+			const headerInfo = this.decodeHeader(dataOrValue, identifierOrID3Version as 3 | 4);
 
-			const splitPoint = dataOrOwnerIdentifier.indexOf(0x00, headerInfo.headerSize);
+			const splitPoint = dataOrValue.indexOf(0x00, headerInfo.headerSize);
 
 			this.value = {
-				ownerIdentifier: dataOrOwnerIdentifier.slice(headerInfo.headerSize, splitPoint).toString("latin1"),
-				identifier: dataOrOwnerIdentifier.slice(splitPoint + 1)
+				ownerIdentifier: dataOrValue.slice(headerInfo.headerSize, splitPoint).toString("latin1"),
+				identifier: dataOrValue.slice(splitPoint + 1)
 			};
 		} else {
-			if(dataOrOwnerIdentifier.length === 0){
-				throw new Error("Owner identifier of a UFID frame cannot be empty");
-			}
-
-			if((identifierOrID3Version as Buffer).length > 64){
-				throw new Error("Identifier of a UFID frame can be at most 64 bytes in length");
-			}
-
 			this.identifier = "UFID";
 
-			this.value = {
-				identifier: identifierOrID3Version as Buffer,
-				ownerIdentifier: dataOrOwnerIdentifier
-			};
+			this.value = dataOrValue;
 		}
 	}
 

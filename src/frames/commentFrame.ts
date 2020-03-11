@@ -8,20 +8,31 @@ import { TextEncodingType } from '@utils';
  * The information that is stored in a comment frame
  */
 interface ICommentValue {
+	/**
+	 * The language that this comment is written in, this is a three letter code according to
+	 * {@link https://www.loc.gov/standards/iso639-2/php/code_list.php ISO-639-2}
+	 */
 	language: string;
+
+	/**
+	 * A short description of the content that is stored in this comment
+	 */
 	description: string;
+
+	/**
+	 * The content that is stored inside of this comment frame, newline characters are allowed in the comment text string
+	 */
 	value: string;
 }
 
 /**
- * An comment frame
+ * Comment
+ *
+ * This frame is intended for any kind of full text information that does not fit in any other frame.
+ *
+ * There may be more than one of this frame in a tag, but only one with the same language and content descriptor.
  */
 export default class CommentFrame extends Frame {
-	/**
-	 * The identifier of this frame
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this frame
 	 */
@@ -36,7 +47,7 @@ export default class CommentFrame extends Frame {
 
 	/**
 	 * Create a new comment frame
-	 * @param value - The value of this unsynchronised lyrics frame
+	 * @param value - The value of this comment frame
 	 */
 	public constructor(value: ICommentValue);
 	public constructor(dataOrValue: Buffer | ICommentValue, ID3Version?: number){

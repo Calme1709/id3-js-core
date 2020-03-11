@@ -54,15 +54,11 @@ interface IEqualisationV2Value {
  * Equalisation V2
  *
  * This is a subjective, alignment frame. It allows the user to predefine an
- * equalisation curve within the audio file. There may be more than one of this
- * frame in each tag, but only one with the same identification string.
+ * equalisation curve within the audio file.
+ *
+ * There may be more than one of this frame in each tag, but only one with the same identification string.
  */
 export default class EqualisationV2Frame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this frame
 	 */

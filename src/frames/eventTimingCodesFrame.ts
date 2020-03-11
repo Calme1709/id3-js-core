@@ -10,68 +10,68 @@ interface IEvent {
 	/**
 	 * This is the time at which this particular event occurs in the audio track, the unit that this is (either MPEG frames
 	 * or Milliseconds) depends on the value of the timestamp unit that is stored within this frame
-	 *
-	 * 00 - padding (has no meaning)
-	 *
-	 * 01 - end of initial silence
-	 *
-	 * 02 - intro start
-	 *
-	 * 03 - main part start
-	 *
-	 * 04 - outro start
-	 *
-	 * 05 - outro end
-	 *
-	 * 06 - verse start
-	 *
-	 * 07 - refrain start
-	 *
-	 * 08 - interlude start
-	 *
-	 * 09 - theme start
-	 *
-	 * 0A - variation start
-	 *
-	 * 0B - key change
-	 *
-	 * 0C - time change
-	 *
-	 * 0D - momentary unwanted noise (Snap, Crackle & Pop)
-	 *
-	 * 0E - sustained noise
-	 *
-	 * 0F - sustained noise end
-	 *
-	 * 10 - intro end
-	 *
-	 * 11 - main part end
-	 *
-	 * 12 - verse end
-	 *
-	 * 13 - refrain end
-	 *
-	 * 14 - theme end
-	 *
-	 * 15 - profanity
-	 *
-	 * 16 - profanity end
-	 *
-	 * 17 - DF - reserved for future use
-	 *
-	 * E0 - EF - not predefined synch 0-F
-	 *
-	 * F0 - FC - reserved for future use
-	 *
-	 * FD - audio end (start of silence)
-	 *
-	 * FE - audio file ends
 	 */
 	timeStamp: number;
 
 	/**
 	 * This is the type of event that occurs at the given timestamp,
-	 * this can be any of a number of events as are described below;
+	 * this can be any of a number of events as are described below; (all numbers are in hexadecimal)
+	 *
+	 * 0x00 - padding (has no meaning)
+	 *
+	 * 0x01 - end of initial silence
+	 *
+	 * 0x02 - intro start
+	 *
+	 * 0x03 - main part start
+	 *
+	 * 0x04 - outro start
+	 *
+	 * 0x05 - outro end
+	 *
+	 * 0x06 - verse start
+	 *
+	 * 0x07 - refrain start
+	 *
+	 * 0x08 - interlude start
+	 *
+	 * 0x09 - theme start
+	 *
+	 * 0x0A - variation start
+	 *
+	 * 0x0B - key change
+	 *
+	 * 0x0C - time change
+	 *
+	 * 0x0D - momentary unwanted noise (Snap, Crackle & Pop)
+	 *
+	 * 0x0E - sustained noise
+	 *
+	 * 0x0F - sustained noise end
+	 *
+	 * 0x10 - intro end
+	 *
+	 * 0x11 - main part end
+	 *
+	 * 0x12 - verse end
+	 *
+	 * 0x13 - refrain end
+	 *
+	 * 0x14 - theme end
+	 *
+	 * 0x15 - profanity
+	 *
+	 * 0x16 - profanity end
+	 *
+	 * 0x17 - 0xDF - reserved for future use
+	 *
+	 * 0xE0 - 0xEF - not predefined synch 0-F
+	 *
+	 * 0xF0 - 0xFC - reserved for future use
+	 *
+	 * 0xFD - audio end (start of silence)
+	 *
+	 * 0xFE - audio file ends
 	 */
 	event: number;
 }
@@ -92,14 +92,13 @@ interface IEventTimingCodesValue {
 }
 
 /**
- * A basic text information frame
+ * Event Timing Codes
+ *
+ * This frame allows for the synchronisation of events with points within the audio of this file.
+ *
+ * There may only be one of these frames within a tag
  */
 export default class EventTimingCodesFrame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this text frame
 	 */

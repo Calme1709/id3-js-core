@@ -5,61 +5,64 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
 import { TextEncodingType } from '@utils';
 
 /**
- * The information that is stored in a user defined text information frame
+ * The information that is stored in a User Defined URL Link frame
  */
 interface IUserDefinedURLLinkValue {
+	/**
+	 * A short description of the link that is stored in this frame
+	 */
 	description: string;
+
+	/**
+	 * A URL, this could be to any number of online resources
+	 */
 	value: string;
 }
 
 /**
- * A user defined url link frame
+ * User Defined URL Link
+ *
+ * This frame is intended for URL Links concerning the audio file in that do not fit into any of the
+ * other predefined URL Link frames.
+ *
+ * There may be more than one of this frame in a tag, but only one with the same description.
  */
 export default class UserDefinedURLLinkFrame extends Frame {
 	/**
-	 * The identifier of this frame
-	 */
-	public identifier!: string;
-
-	/**
-	 * The value of this text frame
+	 * The value of this frame
 	 */
 	public value: IUserDefinedURLLinkValue;
 
 	/**
-	 * Decode a user defined url link frame from a buffer
+	 * Decode a User Defined URL Link frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
 	 */
 	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * Create a new user defined url link frame
-	 * @param description - The description of the content that this frame contains, this should be unique
-	 * @param value - The content of this frame
+	 * Create a new User Defined URL Link frame
+	 * @param value - The value of this User Defined URL Link frame
 	 */
-	public constructor(description: string, value: string);
-	public constructor(dataOrDescription: string | Buffer, ID3VersionOrValue: number | string){
+	public constructor(value: IUserDefinedURLLinkValue);
+	public constructor(dataOrValue: IUserDefinedURLLinkValue | Buffer, ID3VersionOrValue?: number){
 		super();
 
-		if(dataOrDescription instanceof Buffer){
-			const headerInfo = this.decodeHeader(dataOrDescription, ID3VersionOrValue as 3 | 4);
+		if(dataOrValue instanceof Buffer){
+			const headerInfo = this.decodeHeader(dataOrValue, ID3VersionOrValue as 3 | 4);
 
-			const encoding = new TextEncodingType(dataOrDescription[headerInfo.headerSize]);
+			const encoding = new TextEncodingType(dataOrValue[headerInfo.headerSize]);
 
-			const splitPoint = dataOrDescription.indexOf(encoding.terminator, headerInfo.headerSize + 1);
+			const splitPoint = dataOrValue.indexOf(encoding.terminator, headerInfo.headerSize + 1);
 
 			this.value = {
-				description: encoding.decodeText(dataOrDescription.slice(headerInfo.headerSize + 1, splitPoint)),
-				value: dataOrDescription.slice(splitPoint + encoding.terminator.length).toString()
+				description: encoding.decodeText(dataOrValue.slice(headerInfo.headerSize + 1, splitPoint)),
+				value: dataOrValue.slice(splitPoint + encoding.terminator.length).toString()
 			};
 		} else {
 			this.identifier = "WXXX";
 
-			this.value = {
-				description: dataOrDescription,
-				value: ID3VersionOrValue as string
-			};
+			this.value = dataOrValue;
 		}
 	}
 

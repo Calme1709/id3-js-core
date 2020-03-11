@@ -5,26 +5,43 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
 import { TextEncodingType } from '@utils';
 
 /**
- * The value that is stored in an involved people list frame
+ * A person that was involved in the creation of this audio file
  */
-type InvolvedPeopleListValue = Array<{
+interface IInvolvedPerson {
+	/**
+	 * The involved person's role in the creation of this audio file
+	 */
 	role: string;
+
+	/**
+	 * The involved person's name
+	 */
 	name: string;
-}>;
+}
 
 /**
- * An involed people list frame
+ * The value that is stored in an involved people list frame
+ */
+interface IInvolvedPeopleListValue {
+	/**
+	 * The people that were involved in the creation of this audio file
+	 */
+	involvedPeople: IInvolvedPerson[];
+}
+
+/**
+ * Involved People List
+ *
+ * This is a frame containing the names of those involved involved in the creation of the audio file,
+ * and how they were involved.
+ *
+ * There may only be one of this frame in a tag.
  */
 export default class InvolvedPeopleListFrame extends Frame {
 	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
-	/**
 	 * The value of this frame
 	 */
-	public value: InvolvedPeopleListValue;
+	public value: IInvolvedPeopleListValue;
 
 	/**
 	 * Decode a involved people list from a buffer
@@ -35,10 +52,10 @@ export default class InvolvedPeopleListFrame extends Frame {
 
 	/**
 	 * Create a new involved people list frame
-	 * @param involvedPeople - The people that were involved in the making of this audio
+	 * @param involvedPeople - The value of this involved people list frame
 	 */
-	public constructor(involvedPeople: InvolvedPeopleListValue);
-	public constructor(dataOrValue: InvolvedPeopleListValue | Buffer, valueOrID3Version?: number){
+	public constructor(involvedPeople: IInvolvedPeopleListValue);
+	public constructor(dataOrValue: IInvolvedPeopleListValue | Buffer, valueOrID3Version?: number){
 		super();
 
 		if(dataOrValue instanceof Buffer){
@@ -48,7 +65,7 @@ export default class InvolvedPeopleListFrame extends Frame {
 
 			let index = headerInfo.headerSize + 1;
 
-			const involvedPeople: InvolvedPeopleListValue = [];
+			const involvedPeople: IInvolvedPerson[] = [];
 
 			while(index < dataOrValue.length - 1){
 				const splitPoint = dataOrValue.indexOf(encoding.terminator, index);
@@ -63,7 +80,9 @@ export default class InvolvedPeopleListFrame extends Frame {
 				index += endPoint + encoding.terminator.length;
 			}
 
-			this.value = involvedPeople;
+			this.value = {
+				involvedPeople
+			};
 		} else {
 			this.identifier = "IPLS";
 
@@ -81,7 +100,7 @@ export default class InvolvedPeopleListFrame extends Frame {
 			Buffer.from(new Uint8Array([
 				encodingOptions.textEncoding.byteRepresentation
 			])),
-			...this.value.map(involvedPerson =>
+			...this.value.involvedPeople.map(involvedPerson =>
 				Buffer.concat([
 					encodingOptions.textEncoding.encodeText(involvedPerson.role),
 					encodingOptions.textEncoding.terminator,
@@ -101,7 +120,7 @@ export default class InvolvedPeopleListFrame extends Frame {
 		if(version === 4){
 			return {
 				supportsVersion: false,
-				reason: "Involed people list frame is not supported in ID3v2.4"
+				reason: "Involved people list frame is not supported in ID3v2.4"
 			};
 		}
 

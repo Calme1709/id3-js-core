@@ -1,20 +1,20 @@
 import { Buffer } from 'buffer';
-
 import { TextEncodingType, getCorrectIdentifier } from "@utils";
-
 import Frame from './frameComponents/frame';
 import { IVersionSupport } from '@encoder/isVersionSupported';
 import { IEncodingOptions } from '@encoder/encodingOptions';
 
 /**
- * A basic text information frame
+ * Text Information Frame
+ *
+ * The text information frames are often the most important frames, containing information like artist, album and more.
+ * All text information frames supports multiple strings, stored as a null separated list, where null is represented by
+ * the termination code for the character encoding. All text frame identifiers begin with “T”. Only text frame identifiers
+ * begin with “T”.
+ *
+ * There may only be one text information frame of its kind in an tag.
  */
 export default class TextInformationFrame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this text frame
 	 */

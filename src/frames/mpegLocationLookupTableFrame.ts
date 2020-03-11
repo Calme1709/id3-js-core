@@ -3,7 +3,7 @@ import Frame from './frameComponents/frame';
 import { IVersionSupport } from '@encoder/isVersionSupported';
 
 /**
- * The deviation of a reference from the milliseconds and bytes that were stated
+ * The deviation of a reference from the pattern of milliseconds and bytes that are specified
  */
 interface IReferenceDeviation {
 	/**
@@ -18,12 +18,12 @@ interface IReferenceDeviation {
 }
 
 /**
- * The data that is stored in an MPEG location lookup table frame
+ * The value that is stored in an MPEG location lookup table frame
  */
 interface IMPEGLocationLookupTableValue {
 	/**
-	 * The amount of mpeg frames between reference points, for example;
-	 * 1 means every frame is a reference point, 2 is every second frame, etc
+	 * The amount of MPEG frames between reference points, for example a value of 1 means every frame is a reference
+	 * point, 2 is every second frame, etc
 	 */
 	MPEGFramesBetweenReferences: number;
 
@@ -44,14 +44,14 @@ interface IMPEGLocationLookupTableValue {
 }
 
 /**
- * A basic text information frame
+ * MPEG Location Lookup Table
+ *
+ * This frame stores references to points in an MPEG audio file, these references can be used by
+ * software to calculate positions in the file to increase performance and accuracy of jumps within a MPEG [MPEG] audio file.
+ *
+ * There may only be one of this frame in a tag.
  */
 export default class MPEGLocationLookupTableFrame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this text frame
 	 */
@@ -138,14 +138,13 @@ export default class MPEGLocationLookupTableFrame extends Frame {
 			throw new Error("Millisecond deviation cannot exceed 2^255");
 		}
 
-		// tslint:disable-next-line: binary-expression-operand-order
 		const retBuffer = Buffer.alloc(10, 0);
 
 		retBuffer.writeInt16BE(this.value.MPEGFramesBetweenReferences, 0);		//Mpeg frames between references
 		retBuffer.writeIntBE(this.value.bytesBetweenReferences, 2, 3);			//Bytes between references
-		retBuffer.writeIntBE(this.value.millisecondsBetweenReferences, 2, 5);	//Milliseconds between referencess
+		retBuffer.writeIntBE(this.value.millisecondsBetweenReferences, 2, 5);	//Milliseconds between references
 		retBuffer[8] = bytesForByteDeviation * 8;								//Bytes for byte deviations
-		retBuffer[9] = bytesForMillisecondDeviation * 8;						//Bytes for millsecond deviations
+		retBuffer[9] = bytesForMillisecondDeviation * 8;						//Bytes for millisecond deviations
 
 		return Buffer.concat([
 			retBuffer,

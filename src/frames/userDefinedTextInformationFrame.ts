@@ -5,61 +5,64 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
 import { TextEncodingType } from '@utils';
 
 /**
- * The information that is stored in a user defined text information frame
+ * The information that is stored in a User Defined Text Information frame
  */
 interface IUserDefinedTextInformationValue {
+	/**
+	 * A short description of the content in this frame
+	 */
 	description: string;
+
+	/**
+	 * The content that is stored in this frame
+	 */
 	value: string;
 }
 
 /**
- * A user defined text information frame
+ * User Defined Text Information
+ *
+ * This frame is intended for one-string text information concerning the audio file in that does not fit into any of the
+ * other predefined text information frames.
+ *
+ * There may be more than one of this frame in a tag, but only one with the same description.
  */
 export default class UserDefinedTextInformationFrame extends Frame {
 	/**
-	 * The identifier of this frame
-	 */
-	public identifier!: string;
-
-	/**
-	 * The value of this text frame
+	 * The value of this frame
 	 */
 	public value: IUserDefinedTextInformationValue;
 
 	/**
-	 * Decode a user defined text information frame from a buffer
+	 * Decode a User Defined Text Information frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
 	 */
 	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * Create a new user defined text information frame
-	 * @param description - The description of the content that this frame contains, this should be unique
-	 * @param value - The content of this frame
+	 * Create a new User Defined Text Information frame
+	 * @param value - The content of this User Defined Text Information frame
 	 */
-	public constructor(description: string, value: string);
-	public constructor(dataOrDescription: string | Buffer, ID3VersionOrValue: number | string){
+	public constructor(value: IUserDefinedTextInformationValue);
+	public constructor(dataOrValue: IUserDefinedTextInformationValue | Buffer, ID3VersionOrValue?: number){
 		super();
 
-		if(dataOrDescription instanceof Buffer){
-			const headerInfo = this.decodeHeader(dataOrDescription, ID3VersionOrValue as 3 | 4);
+		if(dataOrValue instanceof Buffer){
+			const headerInfo = this.decodeHeader(dataOrValue, ID3VersionOrValue as 3 | 4);
 
-			const encoding = new TextEncodingType(dataOrDescription[headerInfo.headerSize]);
+			const encoding = new TextEncodingType(dataOrValue[headerInfo.headerSize]);
 
-			const splitPoint = dataOrDescription.indexOf(encoding.terminator, headerInfo.headerSize + 1);
+			const splitPoint = dataOrValue.indexOf(encoding.terminator, headerInfo.headerSize + 1);
 
 			this.value = {
-				description: encoding.decodeText(dataOrDescription.slice(headerInfo.headerSize + 1, splitPoint)),
-				value: encoding.decodeText(dataOrDescription.slice(splitPoint + encoding.terminator.length))
+				description: encoding.decodeText(dataOrValue.slice(headerInfo.headerSize + 1, splitPoint)),
+				value: encoding.decodeText(dataOrValue.slice(splitPoint + encoding.terminator.length))
 			};
 		} else {
 			this.identifier = "TXXX";
 
-			this.value = {
-				description: dataOrDescription,
-				value: ID3VersionOrValue as string
-			};
+			this.value = dataOrValue;
 		}
 	}
 

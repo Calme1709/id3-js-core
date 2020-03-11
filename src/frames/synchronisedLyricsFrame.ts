@@ -5,7 +5,7 @@ import { TimestampUnit, TextEncodingType } from '@utils';
 import { IEncodingOptions } from '@encoder/encodingOptions';
 
 /**
- * A singular tempo code
+ * A lyric and time code entry
  */
 interface ILyric {
 	/**
@@ -20,71 +20,39 @@ interface ILyric {
 }
 
 /**
- * The differnet types of content that can be in a synchronised lyrics frame
- */
-enum SynchronisedLyricsContentType {
-	/**
-	 * Other
-	 */
-	other = 0,
-
-	/**
-	 * Lyrics
-	 */
-	lyrics = 1,
-
-	/**
-	 * Text transcription
-	 */
-	textTranscription = 2,
-
-	/**
-	 * Movement/part name (e.g. "Adagio")
-	 */
-	partNames = 3,
-
-	/**
-	 * Events (e.g. "Don Quijote enters the stage")
-	 */
-	events = 4,
-
-	/**
-	 * Chord (e.g. "Bb F Fsus")
-	 */
-	chord = 5,
-
-	/**
-	 * Trivia/'pop up' information
-	 */
-	trivia = 6,
-
-	/**
-	 * URLs to webpages
-	 */
-	webpageUrls = 7,
-
-	/**
-	 * URLs to images
-	 */
-	imageUrls = 8
-}
-
-/**
- * The data that is stored in an synchronised tempo codes frame
+ * The data that is stored in a Synchronised Lyrics frame
  */
 interface ISynchronisedLyricsValue {
 	/**
-	 * The language that this frame is in
+	 * The language that the information in this frame is written in
 	 */
 	language: string;
 
 	/**
-	 * The type of content that this frame contains
+	 * The type of content that this frame contains, this is stored as a number which represents one of the content types below;
+	 *
+	 * 0 - Other
+	 *
+	 * 1 - Lyrics
+	 *
+	 * 2 - Text transcription
+	 *
+	 * 3 - Movement/part name (e.g. "Adagio")
+	 *
+	 * 4 - Events (e.g. "Don Quijote enters the stage")
+	 *
+	 * 5 - Chord (e.g. "Bb F Fsus")
+	 *
+	 * 6 - Trivia/'pop up' information
+	 *
+	 * 7 - URLs to webpages
+	 *
+	 * 8 - URLs to images
 	 */
-	contentType: SynchronisedLyricsContentType;
+	contentType: number;
 
 	/**
-	 * The description of this frame
+	 * A short description of the content that is scored in this frame
 	 */
 	description: string;
 
@@ -94,35 +62,35 @@ interface ISynchronisedLyricsValue {
 	timestampUnit: TimestampUnit;
 
 	/**
-	 * The lyrics
+	 * The lyrics and their timing codes that are stored in this frame
 	 */
 	lyrics: ILyric[];
 }
 
 /**
- * A basic text information frame
+ * Synchronised Lyrics
+ *
+ * This frame provides a method of incorporating the words, said or sung lyrics, in the audio file as text in sync with the
+ * audio. It might also be used to describing events e.g. occurring on a stage or on the screen in sync with the audio.
+ *
+ * There may be more than one of this frame in a tag, however only one with the same language and content descriptor.
  */
 export default class SynchronisedLyricsFrame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this frame
 	 */
 	public value: ISynchronisedLyricsValue;
 
 	/**
-	 * Decode a synchronised lyrics frame from a buffer
+	 * Decode a Synchronised Lyrics frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
 	 */
 	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * Create a new synchronised lyrics frame
-	 * @param value - The value of this synchronised lyrics frame
+	 * Create a new Synchronised Lyrics frame
+	 * @param value - The value of this Synchronised Lyrics frame
 	 */
 	public constructor(value: ISynchronisedLyricsValue);
 	public constructor(dataOrValue: Buffer | ISynchronisedLyricsValue, ID3Version?: number){
@@ -139,14 +107,14 @@ export default class SynchronisedLyricsFrame extends Frame {
 			let index = endOfDescriptor + encoding.terminator.length;
 
 			while(index < dataOrValue.length){
-				const indexOfSeperator = dataOrValue.indexOf(encoding.terminator, index);
+				const indexOfSeparator = dataOrValue.indexOf(encoding.terminator, index);
 
 				lyrics.push({
-					time: dataOrValue.readInt32BE(indexOfSeperator + encoding.terminator.length),
-					text: encoding.decodeText(dataOrValue.slice(index, indexOfSeperator))
+					time: dataOrValue.readInt32BE(indexOfSeparator + encoding.terminator.length),
+					text: encoding.decodeText(dataOrValue.slice(index, indexOfSeparator))
 				});
 
-				index = indexOfSeperator + encoding.terminator.length + 4;
+				index = indexOfSeparator + encoding.terminator.length + 4;
 			}
 
 			this.value = {

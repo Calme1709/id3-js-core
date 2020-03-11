@@ -3,11 +3,11 @@ import Frame from './frameComponents/frame';
 import { IVersionSupport } from '@encoder/isVersionSupported';
 
 /**
- * The deviation of a reference from the milliseconds and bytes that were stated
+ * An adjustment to a specified channel
  */
 interface IChannelAdjustment {
 	/**
-	 * The type of channel that this is;
+	 * The channel that this adjustment should be applied to, the channel is represented as is shown below;
 	 *
 	 * 0: Other
 	 *
@@ -30,34 +30,44 @@ interface IChannelAdjustment {
 	channelType: number;
 
 	/**
-	 * The relative volume adjustment for this channel
+	 * The volume adjustment for this channel.
+	 *
+	 * This is encoded as a fixed point decibel value, 16 bit signed integer representing (adjustment*512), giving a range of
+	 * +/- 64 dB with a precision of 0.001953125 dB.
 	 */
 	relativeVolumeAdjustment: number;
 
 	/**
-	 * The peak volume for this channel
+	 * The peak volume for this channel, set to zero if unknown
 	 */
 	peakVolume?: number;
 }
 
 /**
- * The value of a relative volume adjustment v2 frame
+ * The value of a Relative Volume Adjustment V2 frame
  */
 interface IRelativeVolumeAdjustmentV2Value {
+	/**
+	 * This is a string that is used to identify the situation and/or device where this adjustment should apply.
+	 */
 	identificationString: string;
 
-	channels: IChannelAdjustment[];
+	/**
+	 * The adjustments that are applied to the different audio channels
+	 */
+	adjustments: IChannelAdjustment[];
 }
 
 /**
- * A relative volume adjustment v2 frame
+ * Relative Volume Adjustment V2
+ *
+ * This is a more subjective frame. It allows the user to say how much they want to increase/decrease
+ * the volume on each channel when the file is played. The purpose is to be able to align all files to a reference volume,
+ * so that you don’t have to change the volume constantly. This frame may also be used to balance adjust the audio.
+ *
+ * There may be more than one of this frame in each tag, but only one with the same identification string.
  */
 export default class RelativeVolumeAdjustmentV2Frame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this relative volume adjustment frame
 	 */
@@ -71,8 +81,8 @@ export default class RelativeVolumeAdjustmentV2Frame extends Frame {
 	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * Create a newrelative volume adjustment v2 frame
-	 * @param value - The value of this relative volume adjustment v2 frame
+	 * Create a new Relative Volume Adjustment V2 frame
+	 * @param value - The value of this Relative Volume Adjustment V2 frame
 	 */
 	public constructor(value: IRelativeVolumeAdjustmentV2Value);
 	public constructor(dataOrValue: Buffer | IRelativeVolumeAdjustmentV2Value, ID3Version?: number){
@@ -84,30 +94,30 @@ export default class RelativeVolumeAdjustmentV2Frame extends Frame {
 			const frameContent = dataOrValue.slice(headerInfo.headerSize);
 
 			const identificationString = frameContent.slice(0, frameContent.indexOf(0x00)).toString("latin1");
-			const channels: IChannelAdjustment[] = [];
+			const adjustments: IChannelAdjustment[] = [];
 
 			let index = frameContent.indexOf(0x00) + 1;
 
 			while(frameContent.length - 1 > index){
 				const bitsRepresentingPeak = frameContent[index + 3];
 
-				const channel: IChannelAdjustment = {
+				const adjustment: IChannelAdjustment = {
 					channelType: frameContent[index],
 					relativeVolumeAdjustment: frameContent.readInt16BE(index + 1)
 				};
 
 				if(bitsRepresentingPeak > 0){
-					channel.peakVolume = frameContent.readIntBE(index + 4, Math.ceil(bitsRepresentingPeak / 8));
+					adjustment.peakVolume = frameContent.readIntBE(index + 4, Math.ceil(bitsRepresentingPeak / 8));
 				}
 
-				channels.push(channel);
+				adjustments.push(adjustment);
 
 				index += Math.ceil(bitsRepresentingPeak / 8) + 4;
 			}
 
 			this.value = {
 				identificationString,
-				channels
+				adjustments
 			};
 		} else {
 			this.identifier = "RVA2";
@@ -124,17 +134,17 @@ export default class RelativeVolumeAdjustmentV2Frame extends Frame {
 	public encodeContent(){
 		return Buffer.concat([
 			Buffer.from(this.value.identificationString),
-			...this.value.channels.map(channel => {
-				const bytesForPeakVolume = Math.ceil(Math.log2((channel.peakVolume || 0) + 1) / 8);
+			...this.value.adjustments.map(adjustment => {
+				const bytesForPeakVolume = Math.ceil(Math.log2((adjustment.peakVolume || 0) + 1) / 8);
 
 				const buffer = Buffer.alloc(bytesForPeakVolume + 4);
 
-				buffer.writeInt8(channel.channelType, 0);
-				buffer.writeInt16BE(channel.relativeVolumeAdjustment, 1);
+				buffer.writeInt8(adjustment.channelType, 0);
+				buffer.writeInt16BE(adjustment.relativeVolumeAdjustment, 1);
 				buffer.writeInt8(bytesForPeakVolume * 8, 3);
 
-				if(channel.peakVolume !== undefined && channel.peakVolume > 0){
-					buffer.writeIntBE(channel.peakVolume, 4, bytesForPeakVolume);
+				if(adjustment.peakVolume !== undefined && adjustment.peakVolume > 0){
+					buffer.writeIntBE(adjustment.peakVolume, 4, bytesForPeakVolume);
 				}
 
 				return buffer;

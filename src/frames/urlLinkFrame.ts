@@ -3,31 +3,22 @@ import Frame from './frameComponents/frame';
 import { IVersionSupport } from '@encoder/isVersionSupported';
 
 /**
- * A basic URL Link frame
+ * URL Link
+ *
+ * URL Link frames are used to store links dynamic data such as webpages with touring information, price information or plain
+ * ordinary news. All URL link frame identifiers begins with “W”
+ *
+ * There may only be one URL link frame of its kind in an tag, except if it is of one of the following types and meets the
+ * corresponding criteria is met;
+ *
+ * WCOM - The multiple frames do not contain the same content.
+ * WOAR - The audio contains more than one performer, and the frame does not contain the same content.
  */
 export default class URLLinkFrame extends Frame {
 	/**
-	 * The identifier of this frame
-	 */
-	public identifier!: string;
-
-	/**
-	 * The value of this text frame
+	 * The value of this frame
 	 */
 	public value: string;
-
-	/**
-	 * The supported ID3v2 versions
-	 */
-	protected get contentSupportedVersions(){
-		const addedInV3 = [ "WORS", "WPAY" ];
-
-		if(addedInV3.includes(this.identifier)){
-			return [ 3, 4 ];
-		}
-
-		return [ 2, 3, 4 ];
-	}
 
 	/**
 	 * Decode a URL link frame from a buffer

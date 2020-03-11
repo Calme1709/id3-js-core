@@ -4,11 +4,11 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
 import { FlagByte, bufferFromNumbers } from '@utils';
 
 /**
- * The deviation of a reference from the milliseconds and bytes that were stated
+ * An adjustment to an audio channel
  */
 interface IChannelAdjustment {
 	/**
-	 * Whether the adjustment is positive or negative
+	 * Whether the adjustment is positive (true) or negative (false)
 	 */
 	increment: boolean;
 
@@ -24,62 +24,56 @@ interface IChannelAdjustment {
 }
 
 /**
- * The value of a relative volume adjustment frame without back channels
+ * The value of a relative volume adjustment frame
  */
 interface IRelativeVolumeAdjustmentValue {
 	/**
-	 * The right channel, if a right back channel is present in this frame this is to be treated as the front right channel
+	 * The adjustment to the right channel, if a right back channel adjustment is present in this frame this is to be treated as
+	 * the front right channel
 	 */
 	right?: IChannelAdjustment;
 
 	/**
-	 * The left channel, if a left back channel is present in this frame this is to be treated as the front left channel
+	 * The adjustment to the left channel, if a left back channel adjustment is present in this frame this is to be treated as
+	 * the front left channel
 	 */
 	left?: IChannelAdjustment;
 
 	/**
-	 * The left back channel
+	 * The adjustment to the left back channel, this is not required and is only supported in ID3v2.3
 	 */
 	leftBack?: IChannelAdjustment;
 
 	/**
-	 * The right back channel
+	 * The adjustment to the right back channel, this is not required and is only supported in ID3v2.3
 	 */
 	rightBack?: IChannelAdjustment;
 
 	/**
-	 * The center channel
+	 * The adjustment to the center channel, this is not required and is only supported in ID3v2.3
 	 */
 	center?: IChannelAdjustment;
 
 	/**
-	 * The bass channel
+	 * The adjustment to the bass channel, this is not required and is only supported in ID3v2.3
 	 */
 	bass?: IChannelAdjustment;
 }
 
 /**
- * A relative volume adjustment frame
+ * Relative Volume Adjustment
+ *
+ * This is a subjective frame,  It allows the user to say how much he wants to increase/decrease the volume on each channel
+ * while the file is played. The purpose is to be able to align all files to a reference volume, so that you don’t have to
+ * change the volume constantly. This frame may also be used to balance adjust the audio.
+ *
+ * There may only be one of this frame in a tag.
  */
 export default class RelativeVolumeAdjustmentFrame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this relative volume adjustment frame
 	 */
 	public value: IRelativeVolumeAdjustmentValue;
-
-	/**
-	 * The default adjustment for a channel
-	 */
-	private readonly defaultAdjustment = {
-		increment: false,
-		peakVolume: 0,
-		relativeVolumeAdjustment: 0
-	};
 
 	/**
 	 * Decode a relative volume adjustment frame from a buffer
@@ -89,7 +83,7 @@ export default class RelativeVolumeAdjustmentFrame extends Frame {
 	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * Create a newrelative volume adjustment frame
+	 * Create a new relative volume adjustment frame
 	 * @param value - The value of this relative volume adjustment frame
 	 */
 	public constructor(value: IRelativeVolumeAdjustmentValue);
@@ -173,12 +167,18 @@ export default class RelativeVolumeAdjustmentFrame extends Frame {
 
 		const bytesForVolDesc = Math.ceil(Math.log2(Math.max(...volumeDescriptions) + 1) / 8);
 
-		const leftChannel = this.value.left || this.defaultAdjustment;
-		const rightChannel = this.value.right || this.defaultAdjustment;
-		const leftBackChannel = this.value.leftBack || this.defaultAdjustment;
-		const rightBackChannel = this.value.rightBack || this.defaultAdjustment;
-		const centerChannel = this.value.center || this.defaultAdjustment;
-		const bassChannel = this.value.bass || this.defaultAdjustment;
+		const defaultAdjustment = {
+			increment: false,
+			peakVolume: 0,
+			relativeVolumeAdjustment: 0
+		};
+
+		const leftChannel = this.value.left || defaultAdjustment;
+		const rightChannel = this.value.right || defaultAdjustment;
+		const leftBackChannel = this.value.leftBack || defaultAdjustment;
+		const rightBackChannel = this.value.rightBack || defaultAdjustment;
+		const centerChannel = this.value.center || defaultAdjustment;
+		const bassChannel = this.value.bass || defaultAdjustment;
 
 		const v3Channels = [
 			this.value.bass,

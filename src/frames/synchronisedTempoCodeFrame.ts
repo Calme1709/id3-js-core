@@ -4,7 +4,7 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
 import { TimestampUnit } from '@utils';
 
 /**
- * A singular tempo code
+ * A singular synchronised tempo code
  */
 interface ITempoCode {
 	/**
@@ -19,7 +19,7 @@ interface ITempoCode {
 }
 
 /**
- * The data that is stored in an synchronised tempo codes frame
+ * The value that is stored in a Synchronised Tempo Codes frame
  */
 interface ISynchronisedTempoCodesValue {
 	/**
@@ -28,35 +28,34 @@ interface ISynchronisedTempoCodesValue {
 	timestampUnit: TimestampUnit;
 
 	/**
-	 * The tempo codes
+	 * The collection of tempo codes that are stored in the frame
 	 */
 	tempoCodes: ITempoCode[];
 }
 
 /**
- * A basic text information frame
+ * Synchronised Tempo Codes
+ *
+ * This frame is used to give a more accurate description of the tempo of the audio that is stored in this file.
+ *
+ * There may only be one of this frame in a tag.
  */
 export default class SynchronisedTempoCodesFrame extends Frame {
-	/**
-	 * The frame identifier
-	 */
-	public identifier!: string;
-
 	/**
 	 * The value of this frame
 	 */
 	public value: ISynchronisedTempoCodesValue;
 
 	/**
-	 * Decode a synchronised tempo codes frame from a buffer
+	 * Decode a Synchronised Tempo Codes frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
 	 */
 	public constructor(data: Buffer, ID3Version: number);
 
 	/**
-	 * Create a new synchronised tempo codes frame
-	 * @param value - The value of this synchronised tempo codes frame
+	 * Create a new Synchronised Tempo Codes frame
+	 * @param value - The value of this Synchronised Tempo Codes frame
 	 */
 	public constructor(value: ISynchronisedTempoCodesValue);
 	public constructor(dataOrValue: Buffer | ISynchronisedTempoCodesValue, ID3Version?: number){
