@@ -20,7 +20,8 @@ import {
 	RelativeVolumeAdjustmentFrame,
 	RelativeVolumeAdjustmentV2Frame,
 	EqualisationFrame,
-	EqualisationV2Frame
+	EqualisationV2Frame,
+	ReverbFrame
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -81,8 +82,9 @@ export default class Decoder {
 	 * @param frameHeader - The header data of the frame, this is used to find which method of decoding is to be used
 	 * @param frameData - The frame data, this is the data that makes up the frame
 	 * @param ID3Version - The ID3 version used to decode the frame
-	 * @retuns The decode frame
+	 * @returns The decode frame
 	 */
+	// tslint:disable-next-line: cyclomatic-complexity
 	private static decodeFrame(frameHeader: IFrameHeader, frameData: Buffer, ID3Version: 2 | 3 | 4){
 		if(frameHeader.identifier[0] === "T" && ![ "TXX", "TXXX" ].includes(frameHeader.identifier)){
 			return new TextInformationFrame(frameData, ID3Version);
@@ -147,6 +149,10 @@ export default class Decoder {
 
 				case "EQU2":
 					return new EqualisationV2Frame(frameData, ID3Version);
+
+				case "REV":
+				case "RVRB":
+					return new ReverbFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
