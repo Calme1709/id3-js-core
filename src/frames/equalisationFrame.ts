@@ -43,11 +43,6 @@ interface IEqualisationValue {
  */
 export default class EqualisationFrame extends Frame<IEqualisationValue> {
 	/**
-	 * The value of this frame
-	 */
-	public value: IEqualisationValue;
-
-	/**
 	 * Decode an equalisation frame from a buffer
 	 * @param data - The data to decode
 	 * @param ID3Version - The version of the ID3v2 spec that the tag that this data is from is based on
