@@ -85,35 +85,31 @@ export default class RelativeVolumeAdjustmentV2Frame extends Frame<IRelativeVolu
 
 		if(dataOrValue instanceof Buffer){
 			const headerInfo = this.decodeHeader(dataOrValue, ID3Version as 3 | 4);
-
 			const frameContent = dataOrValue.slice(headerInfo.headerSize);
 
-			const identificationString = frameContent.slice(0, frameContent.indexOf(0x00)).toString("latin1");
-			const adjustments: IChannelAdjustment[] = [];
+			this.value = {
+				identificationString: frameContent.slice(0, frameContent.indexOf(0x00)).toString("latin1"),
+				adjustments: []
+			};
 
 			let index = frameContent.indexOf(0x00) + 1;
 
 			while(frameContent.length - 1 > index){
-				const bitsRepresentingPeak = frameContent[index + 3];
+				const bytesRepresentingPeak = Math.ceil(frameContent[index + 3] / 8);
 
 				const adjustment: IChannelAdjustment = {
 					channelType: frameContent[index],
 					relativeVolumeAdjustment: frameContent.readInt16BE(index + 1)
 				};
 
-				if(bitsRepresentingPeak > 0){
-					adjustment.peakVolume = frameContent.readIntBE(index + 4, Math.ceil(bitsRepresentingPeak / 8));
+				if(bytesRepresentingPeak > 0){
+					adjustment.peakVolume = frameContent.readIntBE(index + 4, bytesRepresentingPeak);
 				}
 
-				adjustments.push(adjustment);
+				this.value.adjustments.push(adjustment);
 
-				index += Math.ceil(bitsRepresentingPeak / 8) + 4;
+				index += bytesRepresentingPeak + 4;
 			}
-
-			this.value = {
-				identificationString,
-				adjustments
-			};
 		} else {
 			this.identifier = "RVA2";
 
