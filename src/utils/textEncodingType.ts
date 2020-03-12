@@ -1,5 +1,7 @@
 import { Buffer } from "buffer";
 
+import { textEncodingInformation } from "../data.json";
+
 /**
  * The pretty names of the different types of encodings
  */
@@ -8,7 +10,7 @@ export type TextEncodingName = "ISO-8859-1" | "UTF-16" | "UTF-16BE" | "UTF-8";
 /**
  * The internal names of the different types of encodings
  */
-type TextEncodingInteralNames = "latin1" | "utf16le" | "utf16be" | "utf8";
+type TextEncodingInternalNames = "latin1" | "utf16le" | "utf16be" | "utf8";
 
 /**
  * A type of text encoding
@@ -17,7 +19,7 @@ export default class TextEncodingType {
 	public readonly terminator: Buffer;
 	public readonly byteRepresentation: number;
 
-	private readonly internalName: TextEncodingInteralNames;
+	private readonly internalName: TextEncodingInternalNames;
 
 	/**
 	 * Create a new text encoding type from the byte representation of the encoding type
@@ -36,38 +38,14 @@ export default class TextEncodingType {
 		this.byteRepresentation = this.getByteFromName(encoding);
 
 		const terminators = {
-			single: Buffer.from(new Uint8Array([ 0x00 ])),
-			double: Buffer.from(new Uint8Array([ 0x00, 0x00 ]))
+			1: Buffer.from(new Uint8Array([ 0x00 ])),
+			2: Buffer.from(new Uint8Array([ 0x00, 0x00 ]))
 		};
 
-		switch(encoding){
-			case "ISO-8859-1":
-				this.terminator = terminators.single;
-				this.internalName = "latin1";
+		const encodingInformation = textEncodingInformation[encoding];
 
-				break;
-
-			case "UTF-16":
-				this.terminator = terminators.double;
-				this.internalName = "utf16le";
-
-				break;
-
-			case "UTF-16BE":
-				this.terminator = terminators.double;
-				this.internalName = "utf16be";
-
-				break;
-
-			case "UTF-8":
-				this.terminator = terminators.single;
-				this.internalName = "utf8";
-
-				break;
-
-			default:
-				throw new Error(`Invalid encoding type: ${encoding}`);
-		}
+		this.terminator = terminators[encodingInformation.terminatorLength.toString() as "1" | "2"];
+		this.internalName = encodingInformation.internalName as TextEncodingInternalNames;
 	}
 
 	/**

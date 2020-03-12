@@ -102,5 +102,23 @@
 			"experimental": false,
 			"tagIsAnUpdate": false
         }
-    }
+	},
+	"textEncodingInformation": {
+		"ISO-8859-1": {
+			"terminatorLength": 1,
+			"internalName": "latin1"
+		},
+		"UTF-16": {
+			"terminatorLength": 2,
+			"internalName": "utf16le"
+		},
+		"UTF-16BE": {
+			"terminatorLength": 1,
+			"internalName": "utf16be"
+		},
+		"UTF-8": {
+			"terminatorLength": 2,
+			"internalName": "utf8"
+		}
+	}
 }
