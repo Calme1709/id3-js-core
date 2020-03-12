@@ -38,50 +38,28 @@ export default (version: 2 | 3 | 4, frames: Frame[], encodingOptions: IUserDefin
 
 	const v4TextEncodings = [ "UTF-8", "UTF-16BE" ];
 
-	switch(version){
-		case 2:
-			if(v4TextEncodings.includes(encodingOptions.textEncoding || "")){
-				reasonsForVersionNotSupported.push(`ID3v2.2 does not support text encoding of type ${encodingOptions.textEncoding}`);
-			}
+	if(version !== 4){
+		if(v4TextEncodings.includes(encodingOptions.textEncoding || "")){
+			reasonsForVersionNotSupported.push(`ID3v2.${version} does not support text encoding of type ${encodingOptions.textEncoding}`);
+		}
 
-			if(encodingOptions.experimental){
-				reasonsForVersionNotSupported.push("ID3v2.2 does not support tags being marked as experimental");
-			}
+		if(encodingOptions.tagIsAnUpdate){
+			reasonsForVersionNotSupported.push(`ID3v2.${version} does not support tags being marked as updates`);
+		}
 
-			if(encodingOptions.tagIsAnUpdate){
-				reasonsForVersionNotSupported.push("ID3v2.2 does not support tags being marked as updates");
-			}
+		if(encodingOptions.tagRestrictions){
+			reasonsForVersionNotSupported.push(`ID3v2.${version} does not support the inclusion of tag encoding restrictions`);
+		}
+	}
 
-			if(encodingOptions.crcData !== undefined){
-				reasonsForVersionNotSupported.push(`ID3v2.2 does not support the inclusion of CRC data`);
-			}
+	if(version === 2){
+		if(encodingOptions.experimental){
+			reasonsForVersionNotSupported.push("ID3v2.2 does not support tags being marked as experimental");
+		}
 
-			if(encodingOptions.tagRestrictions){
-				reasonsForVersionNotSupported.push("ID3v2.2 does not support the inclusion of tag encoding restrictions");
-			}
-
-			break;
-
-		case 3:
-			if(v4TextEncodings.includes(encodingOptions.textEncoding || "")){
-				reasonsForVersionNotSupported.push(`ID3v2.3 does not support text encoding of type ${encodingOptions.textEncoding}`);
-			}
-
-			if(encodingOptions.tagIsAnUpdate){
-				reasonsForVersionNotSupported.push("ID3v2.3 does not support tags being marked as updates");
-			}
-
-			if(encodingOptions.tagRestrictions){
-				reasonsForVersionNotSupported.push("ID3v2.2 does not support the inclusion of tag encoding restrictions");
-			}
-
-			break;
-
-		case 4:
-			break;
-
-		default:
-			throw new Error(`Invalid ID3 version: ${version}`);
+		if(encodingOptions.crcData !== undefined){
+			reasonsForVersionNotSupported.push(`ID3v2.2 does not support the inclusion of CRC data`);
+		}
 	}
 
 	return reasonsForVersionNotSupported.length === 0 ? {
