@@ -33,7 +33,7 @@ export default (frames: Frame[], encodingOptions: IUserDefinedEncodingOptions) =
 
 	if(encodingVersion === undefined){
 		throw new Error(
-			`For all versions of the ID3v2 spec there is atleast one component of the data that cannot be encoded;\n
+			`For all versions of the ID3v2 spec there is at least one component of the data that cannot be encoded;\n
 			\tID3v2.2:\n${reasonsForVersionNotSupported[2].map(reason => `\t\t${reason}\n`)}\n
 			\tID3v2.3:\n${reasonsForVersionNotSupported[3].map(reason => `\t\t${reason}\n`)}\n
 			\tID3v2.4:\n${reasonsForVersionNotSupported[4].map(reason => `\t\t${reason}\n`)}\n`
