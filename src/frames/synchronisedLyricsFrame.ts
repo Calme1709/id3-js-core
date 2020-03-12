@@ -93,32 +93,30 @@ export default class SynchronisedLyricsFrame extends Frame<ISynchronisedLyricsVa
 
 		if(dataOrValue instanceof Buffer){
 			const headerInfo = this.decodeHeader(dataOrValue, ID3Version as 3 | 4);
+			const frameContent = dataOrValue.slice(headerInfo.headerSize);
 
-			const encoding = new TextEncodingType(dataOrValue[headerInfo.headerSize]);
-			const endOfDescriptor = dataOrValue.indexOf(encoding.terminator, headerInfo.headerSize + 6);
+			const encoding = new TextEncodingType(frameContent[0]);
+			const endOfDescriptor = frameContent.indexOf(encoding.terminator, 6);
 
-			const lyrics: ILyric[] = [];
+			this.value = {
+				language: frameContent.slice(1, 4).toString("latin1"),
+				timestampUnit: new TimestampUnit(frameContent[4]),
+				contentType: frameContent[5],
+				description: encoding.decodeText(frameContent.slice(6, endOfDescriptor)),
+				lyrics: []
+			};
 
 			let index = endOfDescriptor + encoding.terminator.length;
-
 			while(index < dataOrValue.length){
 				const indexOfSeparator = dataOrValue.indexOf(encoding.terminator, index);
 
-				lyrics.push({
+				this.value.lyrics.push({
 					time: dataOrValue.readInt32BE(indexOfSeparator + encoding.terminator.length),
 					text: encoding.decodeText(dataOrValue.slice(index, indexOfSeparator))
 				});
 
 				index = indexOfSeparator + encoding.terminator.length + 4;
 			}
-
-			this.value = {
-				language: dataOrValue.slice(headerInfo.headerSize + 1, headerInfo.headerSize + 4).toString("latin1"),
-				timestampUnit: new TimestampUnit(dataOrValue[headerInfo.headerSize + 4]),
-				contentType: dataOrValue[headerInfo.headerSize + 5],
-				description: encoding.decodeText(dataOrValue.slice(headerInfo.headerSize + 6, endOfDescriptor)),
-				lyrics
-			};
 		} else {
 			this.identifier = "SYLT";
 
