@@ -21,7 +21,8 @@ import {
 	RelativeVolumeAdjustmentV2Frame,
 	EqualisationFrame,
 	EqualisationV2Frame,
-	ReverbFrame
+	ReverbFrame,
+	AttachedPictureFrame
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -153,6 +154,10 @@ export default class Decoder {
 				case "REV":
 				case "RVRB":
 					return new ReverbFrame(frameData, ID3Version);
+
+				case "PIC":
+				case "APIC":
+					return new AttachedPictureFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
