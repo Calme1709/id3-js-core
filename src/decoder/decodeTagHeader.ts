@@ -166,7 +166,7 @@ export interface IV4Header extends IHeader {
 export default (data: Buffer): IV2Header | IV3Header | IV4Header => {
 	const version = data[3];
 
-	const tagSize = SynchsafeInteger.decode(data.readIntBE(6, version === 2 ? 3 : 4));
+	const tagSize = SynchsafeInteger.decode(data.readIntBE(6, 4));
 
 	const flags = FlagByte.decode(data[5]);
 
