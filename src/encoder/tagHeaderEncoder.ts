@@ -97,7 +97,7 @@ export default class TagHeaderEncoder {
 
 			buffers.push(Buffer.from(new Uint8Array([
 				0x01,
-				parseInt([ tagSize, textEncoding, textFieldSize, imageEncoding, imageSize ].reduce((acc, cur, i) => 
+				parseInt([ tagSize, textEncoding, textFieldSize, imageEncoding, imageSize ].reduce((acc, cur, i) =>
 					acc + (i % 2 === 1 ? cur.toString(2) : cur.toString(2).padStart(2, "0"))
 				, ""), 2)
 			])));
