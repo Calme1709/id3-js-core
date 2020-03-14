@@ -22,7 +22,8 @@ import {
 	EqualisationFrame,
 	EqualisationV2Frame,
 	ReverbFrame,
-	AttachedPictureFrame
+	AttachedPictureFrame,
+	GeneralEncapsulatedObject
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -86,7 +87,7 @@ export default class Decoder {
 	 * @returns The decode frame
 	 */
 	// tslint:disable-next-line: cyclomatic-complexity
-	private static decodeFrame(frameHeader: IFrameHeader, frameData: Buffer, ID3Version: 2 | 3 | 4){
+	private static decodeFrame(frameHeader: IFrameHeader, frameData: Buffer, ID3Version: 2 | 3 | 4): Frame{
 		if(frameHeader.identifier[0] === "T" && ![ "TXX", "TXXX" ].includes(frameHeader.identifier)){
 			return new TextInformationFrame(frameData, ID3Version);
 		} else if(frameHeader.identifier[0] === "W" && ![ "WXX", "WXXX" ].includes(frameHeader.identifier)) {
@@ -158,6 +159,10 @@ export default class Decoder {
 				case "PIC":
 				case "APIC":
 					return new AttachedPictureFrame(frameData, ID3Version);
+
+				case "GEO":
+				case "GEOB":
+					return new GeneralEncapsulatedObject(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);

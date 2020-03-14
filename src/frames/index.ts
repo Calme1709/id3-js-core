@@ -18,3 +18,4 @@ export { default as EqualisationFrame } from "./equalisationFrame";
 export { default as EqualisationV2Frame } from "./equalisationFrameV2";
 export { default as ReverbFrame } from "./reverbFrame";
 export { default as AttachedPictureFrame } from "./attachedPicture";
+export { default as GeneralEncapsulatedObject } from "./generalEncapsulatedObject";
