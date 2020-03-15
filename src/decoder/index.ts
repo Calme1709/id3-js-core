@@ -23,7 +23,8 @@ import {
 	EqualisationV2Frame,
 	ReverbFrame,
 	AttachedPictureFrame,
-	GeneralEncapsulatedObject
+	GeneralEncapsulatedObject,
+	PlayCounterFrame
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -163,6 +164,10 @@ export default class Decoder {
 				case "GEO":
 				case "GEOB":
 					return new GeneralEncapsulatedObject(frameData, ID3Version);
+
+				case "CNT":
+				case "PCNT":
+					return new PlayCounterFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
