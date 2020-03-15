@@ -63,57 +63,30 @@ export default class TextInformationFrame extends Frame<string> {
 	 * @returns Whether the content can be encoded with the specified version
 	 */
 	protected contentSupportsVersion(version: number): IVersionSupport{
-		const addedInV3 = [ "TRSN", "TRSO" ];
-		const addedInV4 = [
-			"TDEN",
-			"TDOR",
-			"TDRC",
-			"TDRL",
-			"TDTG",
-			"TIPL",
-			"TMCL",
-			"TMOO",
-			"TPRO",
-			"TSOA",
-			"TSOP",
-			"TSOT",
-			"TSST"
-		];
+		const v3Added = [ "TRSN", "TRSO" ];
+		const v4Added= [ "TDEN", "TDOR", "TDRC", "TDRL", "TDTG", "TIPL", "TMCL", "TMOO", "TPRO", "TSOA", "TSOP", "TSOT", "TSST" ];
 
-		const removedInV4 = [ "TDAT", "TIME", "TORY", "TRDA", "TSIZ", "TYER" ];
+		const v4Removed = [ "TDAT", "TIME", "TORY", "TRDA", "TSIZ", "TYER" ];
 
-		if(version === 2){
-			if(addedInV3.includes(this.identifier)){
-				return {
-					supportsVersion: false,
-					reason: "This frame is only supported in ID3v2.3+"
-				};
-			}
-
-			if(addedInV4.includes(this.identifier)){
-				return {
-					supportsVersion: false,
-					reason: "This frame is only supported in ID3v2.4"
-				};
-			}
+		if(v3Added.includes(this.identifier) && version === 2){
+			return {
+				supportsVersion: false,
+				reason: "This frame is only supported in ID3v2.3+"
+			};
 		}
 
-		if(version === 3){
-			if(addedInV4.includes(this.identifier)){
-				return {
-					supportsVersion: false,
-					reason: "This frame is only supported in ID3v2.4"
-				};
-			}
+		if(v4Added.includes(this.identifier) && version !== 4){
+			return {
+				supportsVersion: false,
+				reason: "This frame is only supported in ID3v2.4"
+			};
 		}
 
-		if(version === 4){
-			if(removedInV4.includes(getCorrectIdentifier(this.identifier, 3))){
-				return {
-					supportsVersion: false,
-					reason: "This frame was removed in ID3v2.4"
-				};
-			}
+		if(version === 4 && v4Removed.includes(getCorrectIdentifier(this.identifier, 3))){
+			return {
+				supportsVersion: false,
+				reason: "This frame was removed in ID3v2.4"
+			};
 		}
 
 		return {
