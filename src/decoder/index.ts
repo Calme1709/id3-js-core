@@ -24,7 +24,8 @@ import {
 	ReverbFrame,
 	AttachedPictureFrame,
 	GeneralEncapsulatedObject,
-	PlayCounterFrame
+	PlayCounterFrame,
+	PopularimeterFrame
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -168,6 +169,10 @@ export default class Decoder {
 				case "CNT":
 				case "PCNT":
 					return new PlayCounterFrame(frameData, ID3Version);
+
+				case "POP":
+				case "POPM":
+					return new PopularimeterFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);

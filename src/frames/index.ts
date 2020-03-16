@@ -20,3 +20,4 @@ export { default as ReverbFrame } from "./reverbFrame";
 export { default as AttachedPictureFrame } from "./attachedPicture";
 export { default as GeneralEncapsulatedObject } from "./generalEncapsulatedObject";
 export { default as PlayCounterFrame } from "./playCounter";
+export { default as PopularimeterFrame } from "./popularimeter";

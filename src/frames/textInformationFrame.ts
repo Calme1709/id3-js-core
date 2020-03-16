@@ -64,7 +64,7 @@ export default class TextInformationFrame extends Frame<string> {
 	 */
 	protected contentSupportsVersion(version: number): IVersionSupport{
 		const v3Added = [ "TRSN", "TRSO" ];
-		const v4Added= [ "TDEN", "TDOR", "TDRC", "TDRL", "TDTG", "TIPL", "TMCL", "TMOO", "TPRO", "TSOA", "TSOP", "TSOT", "TSST" ];
+		const v4Added = [ "TDEN", "TDOR", "TDRC", "TDRL", "TDTG", "TIPL", "TMCL", "TMOO", "TPRO", "TSOA", "TSOP", "TSOT", "TSST" ];
 
 		const v4Removed = [ "TDAT", "TIME", "TORY", "TRDA", "TSIZ", "TYER" ];
 
