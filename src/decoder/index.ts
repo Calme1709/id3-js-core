@@ -25,7 +25,8 @@ import {
 	AttachedPictureFrame,
 	GeneralEncapsulatedObject,
 	PlayCounterFrame,
-	PopularimeterFrame
+	PopularimeterFrame,
+	RecommendedBufferSizeFrame
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -173,6 +174,10 @@ export default class Decoder {
 				case "POP":
 				case "POPM":
 					return new PopularimeterFrame(frameData, ID3Version);
+
+				case "BUF":
+				case "RBUF":
+					return new RecommendedBufferSizeFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);
