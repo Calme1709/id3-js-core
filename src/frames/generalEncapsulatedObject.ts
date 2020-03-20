@@ -36,7 +36,7 @@ interface IGeneralEncapsulatedObjectValue {
  *
  * There may be more than one of this frame in a tag, but only one with the same content descriptor.
  */
-export default class AttachedPictureFrame extends Frame<IGeneralEncapsulatedObjectValue> {
+export default class GeneralEncapsulatedObjectFrame extends Frame<IGeneralEncapsulatedObjectValue> {
 	/**
 	 * Decode a general encapsulated object frame from a buffer
 	 * @param data - The data to decode
