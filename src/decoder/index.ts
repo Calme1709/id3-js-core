@@ -26,7 +26,8 @@ import {
 	GeneralEncapsulatedObject,
 	PlayCounterFrame,
 	PopularimeterFrame,
-	RecommendedBufferSizeFrame
+	RecommendedBufferSizeFrame,
+	AudioEncryptionFrame
 } from "@frames";
 
 import { Unsynchronisation } from "@utils";
@@ -178,6 +179,10 @@ export default class Decoder {
 				case "BUF":
 				case "RBUF":
 					return new RecommendedBufferSizeFrame(frameData, ID3Version);
+
+				case "CRA":
+				case "AENC":
+					return new AudioEncryptionFrame(frameData, ID3Version);
 
 				default:
 					throw new Error(`Unsupported frame type: ${frameHeader.identifier}`);

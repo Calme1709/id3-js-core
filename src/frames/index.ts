@@ -22,3 +22,4 @@ export { default as GeneralEncapsulatedObject } from "./generalEncapsulatedObjec
 export { default as PlayCounterFrame } from "./playCounter";
 export { default as PopularimeterFrame } from "./popularimeter";
 export { default as RecommendedBufferSizeFrame } from "./recommendedBufferSize";
+export { default as AudioEncryptionFrame } from "./audioEncryption";
