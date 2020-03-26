@@ -22,6 +22,7 @@
 	},
 	"devDependencies": {
 		"@ahrakio/witty-webpack-declaration-files": "^1.0.3",
+		"@types/hapi__joi": "^16.0.12",
 		"json-loader": "^0.5.7",
 		"terser-webpack-plugin": "^2.3.5",
 		"ts-loader": "^6.2.1",
@@ -33,6 +34,7 @@
 		"webpack-cli": "^3.3.11"
 	},
 	"dependencies": {
+		"@hapi/joi": "^17.1.1",
 		"buffer": "^5.5.0"
 	},
 	"files": [

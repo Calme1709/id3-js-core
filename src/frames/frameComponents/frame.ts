@@ -4,6 +4,7 @@ import { IVersionSupport } from '@encoder/isVersionSupported';
 import decodeFrameHeader, { IV3FrameFlags, IV4FrameFlags } from "@decoder/decodeFrameHeader";
 import { SynchsafeInteger, getCorrectIdentifier } from "@utils";
 import FrameFlagManager from './frameFlagManager';
+import Joi from "@hapi/joi";
 
 /**
  * The base class that all frames derive from
@@ -21,6 +22,18 @@ export default abstract class Frame<ValueType = any> {
 
 	get flags(){
 		return this.flagManager.flags;
+	}
+
+	constructor(dataOrValue: Buffer | ValueType, _: number | undefined, valueSchema: Joi.Schema){
+		if(dataOrValue instanceof Buffer){
+			return;
+		}
+
+		const validationResult = valueSchema.validate(dataOrValue);
+
+		if(validationResult.error !== undefined){
+			throw validationResult.error;
+		}
 	}
 
 	/**
