@@ -3,12 +3,17 @@
  */
 type TimestampUnitNames = "MPEGFrames" | "Milliseconds";
 
+type ByteValue = 1 | 2;
+
 /**
  * A timestamp unit
  */
 export default class TimestampUnit {
-	public byteRepresentation: 1 | 2;
-	public unit: TimestampUnitNames;
+	public byteRepresentation: ByteValue;
+
+	public get unit() {
+		return this.getUnitFromByte(this.byteRepresentation);
+	}
 
 	/**
 	 * Create a new timestamp unit class from the name of the timestamp unit
@@ -20,11 +25,12 @@ export default class TimestampUnit {
 	 * Create a new timestamp unit class from the byte representation of the unit
 	 * @param unit - The byte representation of the unit
 	 */
-	constructor(unit: number);
-	constructor(unit: number | TimestampUnitNames){
-		const unitName = typeof unit === "string" ? unit : this.getUnitFromByte(unit as 1 | 2);
+	constructor(unit: ByteValue);
+	constructor(unit: ByteValue | TimestampUnitNames){
+		if(typeof unit === "number") {
+			this.byteRepresentation = unit;
+		}
 
-		this.unit = unitName;
 		this.byteRepresentation = this.getByteFromUnit(this.unit);
 	}
 
